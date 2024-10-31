@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Trang Chủ</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="./a.css">
+	<link rel="stylesheet" href="/css/admin/adminCreateAccount.css">
+	<link rel="stylesheet" href="/css/admin/adminNav.css">
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<!-- Thanh điều hướng Sidebar -->
+			<nav class="col-md-3 col-lg-2 d-md-block sidebar">
+				<a href="/admin/admin_home" class="logo">🏨</a>
+				<ul class="nav flex-column">
+					<li class="nav-item"><a href="/admin/admin_home" class="nav-link">Trang Chủ</a></li>
+					<li class="nav-item"><a href="#about" class="nav-link">Giới Thiệu</a></li>
+					<li class="nav-item"><a href="#services" class="nav-link">Dịch Vụ</a></li>
+					<li class="nav-item"><a href="#contact" class="nav-link">Liên Hệ</a></li>
+					<li class="nav-item"><a href="#settings" class="nav-link">Cài Đặt</a></li>
+				</ul>
+			</nav>
+
+			<!-- Khu vực nội dung chính -->
+			<main class="col-md-9 col-lg-10 main-content">
+				<!-- Form chọn vai trò -->
+				<div class="form-container">
+					<form>
+						<div class="mb-3">
+							<label for="role" class="form-label">Chọn chức vụ</label>
+							<select id="role" class="form-select" onchange="toggleForm()">
+								<option value="">-- Chọn vai trò --</option>
+								<option value="DOCTOR">Bác sĩ</option>
+								<option value="NURSE">Y tá</option>
+							</select>
+						</div>
+					</form>
+				</div>
+
+				<!-- Form cho Y tá -->
+				<div id="nurseForm" class="form-container hidden">
+					<h3>Thông tin y tá</h3>
+					<form action="/admin/create_account_nuser" th:object="${createNuserDto}" method="post"
+						enctype="multipart/form-data">
+						<div th:if="${error != null}" class="alert alert-danger" role="alert">
+							<p th:text="${error}"></p>
+						</div>
+						<div th:if="${success != null}" class="alert alert-success" role="alert">
+							<p th:text="${success}"></p>
+						</div>
+						<div class="avatar-upload mb-3">
+							<label for="avatarNuser">
+								<div class="avatar-preview">
+									<img class="avatarPreviewNuser" id="avatarPreview" src="" alt="Avatar">
+								</div>
+								<input type="file" accept="image/png" style="display: none;" th:field="*{avatarNuser}">
+								<p th:if="${#fields.hasErrors('avatarNuser')}" th:errorclass="text-danger" accept=".png"
+									th:errors="*{avatarNuser}"></p>
+							</label>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Tài khoản</label>
+							<input type="text" class="form-control" th:field="*{userName}">
+							<p th:if="${#fields.hasErrors('userName')}" th:errorclass="text-danger"
+								th:errors="*{userName}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Mật khẩu</label>
+							<input type="text" class="form-control" th:field="*{password}">
+							<p th:if="${#fields.hasErrors('password')}" th:errorclass="text-danger"
+								th:errors="*{password}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Họ và tên</label>
+							<input type="text" class="form-control" th:field="*{name}">
+							<p th:if="${#fields.hasErrors('name')}" th:errorclass="text-danger" th:errors="*{name}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Tuổi</label>
+							<input type="number" class="form-control" th:field="*{age}">
+							<p th:if="${#fields.hasErrors('age')}" th:errorclass="text-danger" th:errors="*{age}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Email</label>
+							<input type="email" class="form-control" th:field="*{email}">
+							<p th:if="${#fields.hasErrors('email')}" th:errorclass="text-danger" th:errors="*{email}">
+							</p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Giới tính</label>
+							<select class="form-select" th:field="*{sex}">
+								<option value="MALE">Nam</option>
+								<option value="FEMALE">Nữ</option>
+							</select>
+							<p th:if="${#fields.hasErrors('sex')}" th:errorclass="text-danger" th:errors="*{sex}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Số điện thoại</label>
+							<input type="text" class="form-control" th:field="*{phoneNumber}">
+							<p th:if="${#fields.hasErrors('phoneNumber')}" th:errorclass="text-danger"
+								th:errors="*{phoneNumber}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Bằng cấp</label>
+							<textarea class="form-control" th:field="*{degree}" rows="5"
+								style="height: 200px; resize: vertical; width: 100%;"></textarea>
+							<p th:if="${#fields.hasErrors('degree')}" th:errorclass="text-danger" th:errors="*{degree}">
+							</p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Phòng</label>
+							<select class="form-select" th:field="*{room}">
+								<option value="" disabled selected>Chọn phòng ban</option>
+								<option value="PATIENT_CARE">Patient Care - Chăm sóc bệnh nhân</option>
+								<option value="MEDICATION_MANAGEMENT">Medication Management - Quản lý thuốc</option>
+								<option value="LABORATORY">Laboratory - Phòng xét nghiệm</option>
+								<option value="RADIOLOGY_DEPARTMENT">Radiology Department - Khoa X-quang</option>
+								<option value="ELECTROCARDIOGRAPHY">Electrocardiography - Điện tâm đồ</option>
+								<option value="PULMONARY_FUNCTION_TEST">Pulmonary Function Test - Kiểm tra chức năng
+									phổi</option>
+								<option value="ECHOCARDIOGRAPHY">Echocardiography - Siêu âm tim</option>
+								<option value="BONE_DENSITOMETRY">Bone Densitometry - Đo mật độ xương</option>
+								<option value="ENDOSCOPY">Endoscopy - Nội soi</option>
+								<option value="ELECTROENCEPHALOGRAPHY">Electroencephalography - Điện não đồ</option>
+								<option value="CARDIAC_DIAGNOSTICS">Cardiac Diagnostics - Chẩn đoán tim mạch</option>
+							</select>
+							<p th:if="${#fields.hasErrors('room')}" th:errorclass="text-danger" th:errors="*{room}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Số năm kinh nghiệm</label>
+							<input type="number" class="form-control" th:field="*{yearsExperience}">
+							<p th:if="${#fields.hasErrors('yearsExperience')}" th:errorclass="text-danger"
+								th:errors="*{yearsExperience}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Giá dịch vụ</label>
+							<input type="number" step="100000" class="form-control" th:field="*{price}">
+							<p th:if="${#fields.hasErrors('price')}" th:errorclass="text-danger" th:errors="*{price}">
+							</p>
+						</div>
+						<button type="submit" class="btn btn-primary">Lưu thông tin y tá</button>
+					</form>
+				</div>
+
+				<!-- Form cho Bác sĩ -->
+				<div id="doctorForm" class="form-container hidden">
+					<h3>Thông tin bác sĩ</h3>
+					<form id="loginForm" method="post" action="/admin/create_account_doctor"
+						th:object="${createDoctorDto}" enctype="multipart/form-data">
+						<div th:if="${error != null}" class="alert alert-danger" role="alert">
+							<p th:text="${error}"></p>
+						</div>
+						<div th:if="${success != null}" class="alert alert-success" role="alert">
+							<p th:text="${success}"></p>
+						</div>
+						<div class="avatar-upload mb-3">
+							<label for="avatarDoctor">
+								<div class="avatar-preview">
+									<img class="avatarPreviewDoctor" id="avatarPreview" src="" alt="Avatar">
+								</div>
+								<input type="file" accept="image/png" id="avatarDoctor" style="display: none;"
+									th:field="*{avatarDoctor}">
+								<p th:if="${#fields.hasErrors('avatarDoctor')}" th:errorclass="text-danger"
+									accept=".png" th:errors="*{avatarDoctor}"></p>
+							</label>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Tài khoản</label>
+							<input class="form-control mb-3" th:field="*{userName}">
+							<p th:if="${#fields.hasErrors('userName')}" th:errorclass="text-danger"
+								th:errors="*{userName}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Mật khẩu</label>
+							<input type="text" class="form-control" th:field="*{password}">
+							<p th:if="${#fields.hasErrors('password')}" th:errorclass="text-danger"
+								th:errors="*{password}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Họ và tên</label>
+							<input type="text" class="form-control" th:field="*{name}">
+							<p th:if="${#fields.hasErrors('name')}" th:errorclass="text-danger" th:errors="*{name}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Tuổi</label>
+							<input type="number" class="form-control" th:field="*{age}">
+							<p th:if="${#fields.hasErrors('age')}" th:errorclass="text-danger" th:errors="*{age}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Email</label>
+							<input type="email" class="form-control" th:field="*{email}">
+							<p th:if="${#fields.hasErrors('email')}" th:errorclass="text-danger" th:errors="*{email}">
+							</p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Giới tính</label>
+							<select class="form-select" th:field="*{sex}">
+								<option value="MALE">Nam</option>
+								<option value="FEMALE">Nữ</option>
+							</select>
+							<p th:if="${#fields.hasErrors('sex')}" th:errorclass="text-danger" th:errors="*{sex}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Số điện thoại</label>
+							<input type="text" class="form-control" th:field="*{phoneNumber}">
+							<p th:if="${#fields.hasErrors('phoneNumber')}" th:errorclass="text-danger"
+								th:errors="*{phoneNumber}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Chuyên khoa</label>
+							<select class="form-select" th:field="*{specialized}">
+								<option value="INTERNAL_MEDICINE">Internal Medicine - Nội khoa</option>
+								<option value="SURGERY">Surgery - Ngoại khoa</option>
+								<option value="OBSTETRICS_AND_GYNECOLOGY">Obstetrics and Gynecology - Sản phụ khoa
+								</option>
+								<option value="PEDIATRICS">Pediatrics - Nhi khoa</option>
+								<option value="DERMATOLOGY">Dermatology - Da liễu</option>
+								<option value="PSYCHIATRY">Psychiatry - Tâm thần học</option>
+							</select>
+							<p th:if="${#fields.hasErrors('specialized')}" th:errorclass="text-danger"
+								th:errors="*{specialized}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Số năm kinh nghiệm</label>
+							<input type="number" class="form-control" th:field="*{yearsExperience}">
+							<p th:if="${#fields.hasErrors('yearsExperience')}" th:errorclass="text-danger"
+								th:errors="*{yearsExperience}"></p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Bằng cấp</label>
+							<textarea class="form-control" th:field="*{degree}" rows="5"
+								style="height: 200px; resize: vertical; width: 100%;"></textarea>
+							<p th:if="${#fields.hasErrors('degree')}" th:errorclass="text-danger" th:errors="*{degree}">
+							</p>
+						</div>
+						<button type="submit" class="btn btn-primary">Lưu thông tin bác sĩ</button>
+					</form>
+				</div>
+
+
+
+			</main>
+		</div>
+	</div>
+
+	<script>
+		function toggleForm() {
+			var role = document.getElementById("role").value;
+			document.getElementById("doctorForm").classList.add("hidden");
+			document.getElementById("nurseForm").classList.add("hidden");
+
+			if (role === "DOCTOR") {
+				document.getElementById("doctorForm").classList.remove("hidden");
+			} else if (role === "NURSE") {
+				document.getElementById("nurseForm").classList.remove("hidden");
+			}
+		}
+		document.getElementById('avatarDoctor').addEventListener('change', handleFileChangeDoctor);
+		document.getElementById('avatarNuser').addEventListener('change', handleFileChangeNuser);
+
+		function handleFileChangeDoctor(event) {
+			const reader = new FileReader();
+			reader.onload = function () {
+				const previews = document.querySelectorAll('.avatarPreviewDoctor');
+
+				// Duyệt qua tất cả các phần tử có class "avatarPreview" và cập nhật ảnh
+				previews.forEach(preview => {
+					preview.src = reader.result;
+					preview.style.display = 'block';
+				});
+			};
+			reader.readAsDataURL(event.target.files[0]);
+		}
+		
+		function handleFileChangeNuser(event) {
+			const reader = new FileReader();
+			reader.onload = function () {
+				const previews = document.querySelectorAll('.avatarPreviewNuser');
+
+				// Duyệt qua tất cả các phần tử có class "avatarPreview" và cập nhật ảnh
+				previews.forEach(preview => {
+					preview.src = reader.result;
+					preview.style.display = 'block';
+				});
+			};
+			reader.readAsDataURL(event.target.files[0]);
+		}
+	</script>
+</body>
+
+</html>

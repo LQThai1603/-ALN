@@ -1,0 +1,31 @@
+.sidebar {
+    background-color: #007bff; /* Màu nền thanh điều hướng - xanh dương đậm hơn */
+    height: 100vh;
+    padding-top: 20px;
+    position: fixed; /* Giữ thanh bên cố định */
+}
+
+.logo {
+    font-size: 8rem; /* Tăng kích thước logo lên 6rem */
+    text-align: center;
+    display: block;
+    margin-bottom: 20px;
+    transition: transform 0.3s; /* Hiệu ứng khi hover */
+}
+
+.logo:hover {
+    transform: scale(1.1); /* Tăng kích thước khi hover */
+}
+
+.nav-link {
+    padding: 10px 15px;
+    color: #ffffff; /* Màu chữ - trắng */
+    text-decoration: none; /* Bỏ gạch chân */
+    font-size: 2rem; /* Kích thước chữ cho nav-link */
+    transition: background-color 0.3s; /* Hiệu ứng khi hover */
+}
+
+.nav-link:hover {
+    background-color: #0056b3; /* Màu nền khi hover - xanh dương đậm hơn */
+}
+

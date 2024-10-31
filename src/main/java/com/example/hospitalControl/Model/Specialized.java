@@ -1,10 +1,10 @@
 package com.example.hospitalControl.Model;
 
 public enum Specialized {
-	Internal_Medicine, // nội khoa
-	Surgery, // ngoại khoa
-	Obstetrics_And_Gynecology, // sản phụ khoa
-	Pediatrics, // nhi khoa
-	Dermatology, // da liễu
-	Psychiatry // tâm thần học
+	INTERNAL_MEDICINE, // nội khoa
+	SURGERY, // ngoại khoa
+	OBSTETRICS_AND_GYNECOLOGY, // sản phụ khoa
+	PEDIATRICS, // nhi khoa
+	DERMATOLOGY, // da liễu
+	PSYCHIATRY // tâm thần học
 }

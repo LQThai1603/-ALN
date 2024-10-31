@@ -1,0 +1,115 @@
+.sidebar {
+    background-color: #007bff; /* Màu nền thanh điều hướng - xanh dương đậm hơn */
+    height: 100vh;
+    padding-top: 20px;
+    position: fixed; /* Giữ thanh bên cố định */
+}
+
+.logo {
+    font-size: 8rem; /* Tăng kích thước logo lên 6rem */
+    text-align: center;
+    display: block;
+    margin-bottom: 20px;
+    transition: transform 0.3s; /* Hiệu ứng khi hover */
+}
+
+.logo:hover {
+    transform: scale(1.1); /* Tăng kích thước khi hover */
+}
+
+.nav-link {
+    padding: 10px 15px;
+    color: #ffffff; /* Màu chữ - trắng */
+    text-decoration: none; /* Bỏ gạch chân */
+    font-size: 2rem; /* Kích thước chữ cho nav-link */
+    transition: background-color 0.3s; /* Hiệu ứng khi hover */
+}
+
+.nav-link:hover {
+    background-color: #0056b3; /* Màu nền khi hover - xanh dương đậm hơn */
+}
+
+
+
+/* CSS cho form chính */
+.main-content {
+	margin-left: 18%;
+	padding: 20px;
+}
+
+.form-container {
+	background-color: #f8f9fa;
+	border-radius: 8px;
+	padding: 20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin-top: 20px;
+}
+
+.form-container h3 {
+	color: #007bff;
+	font-weight: bold;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.form-label {
+	font-weight: bold;
+}
+
+.form-control,
+.form-select {
+	height: 45px;
+	font-size: 1.2rem;
+}
+
+.btn-primary {
+	width: 100%;
+	padding: 10px;
+	font-size: 1.2rem;
+}
+
+.mb-3 {
+	margin-bottom: 15px;
+}
+
+.hidden {
+	display: none;
+}
+
+/* Container của phần upload avatar */
+.avatar-upload {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.avatar-upload label {
+	cursor: pointer;
+	display: inline-block;
+}
+
+/* Phần hiển thị ảnh preview */
+.avatar-preview {
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 10px 0;
+	border: 2px solid #ddd;
+	background-color: #f0f0f0;
+	position: relative;
+	text-align: center;
+	color: #999;
+	font-size: 14px;
+}
+
+.avatar-preview img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: none;
+}

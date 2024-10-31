@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4; /* Màu nền nhẹ */
+    color: #333;
+}
+
+.card {
+    width: 250px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s; /* Hiệu ứng khi hover */
+}
+
+.card:hover {
+    transform: scale(1.05); /* Tăng kích thước khi hover */
+}
+
+.icon {
+    font-size: 5rem; /* Kích thước icon */
+}
+
+
+.main-content {
+    margin-left: 17%; /* Đảm bảo nội dung không bị che bởi sidebar */
+    padding: 20px; /* Padding cho nội dung chính */
+    display: flex;
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    height: calc(100vh - 40px); /* Tính toán chiều cao của main-content */
+}
+
+

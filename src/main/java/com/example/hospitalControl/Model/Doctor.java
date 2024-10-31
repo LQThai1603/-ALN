@@ -17,7 +17,10 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "doctor")
-public class Doctor extends Person{	
+public class Doctor extends Person{
+	@Column(name = "avatar")
+	private String avatar;
+	
 	@Enumerated(value = EnumType.STRING)
 	private Specialized specialized;
 	
@@ -57,6 +60,30 @@ public class Doctor extends Person{
 
 	public void setDegree(String degree) {
 		this.degree = degree;
+	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
+	public OnLeave getOnLeave() {
+		return onLeave;
+	}
+
+	public void setOnLeave(OnLeave onLeave) {
+		this.onLeave = onLeave;
+	}
+
+	public List<MedicalRecord> getMedicalRecord() {
+		return medicalRecord;
+	}
+
+	public void setMedicalRecord(List<MedicalRecord> medicalRecord) {
+		this.medicalRecord = medicalRecord;
 	}
 	
 	

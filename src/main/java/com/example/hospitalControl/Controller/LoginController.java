@@ -2,6 +2,8 @@ package com.example.hospitalControl.Controller;
 
 import java.util.Optional;
 
+import javax.crypto.SecretKey;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.hospitalControl.Model.Account;
 import com.example.hospitalControl.Model.AccountDto;
 import com.example.hospitalControl.Model.Role;
+import com.example.hospitalControl.Security.AESUtils;
 import com.example.hospitalControl.Service.AccountRepository;
 
 import jakarta.validation.Valid;
@@ -40,7 +43,7 @@ public class LoginController {
 	@PostMapping("/login")
 	public String access(@Valid @ModelAttribute AccountDto accountDto, 
 			BindingResult result,
-			RedirectAttributes redirectAttributes) {
+			RedirectAttributes redirectAttributes) throws Exception {
 		if(result.hasErrors()) {
 			return "login/login";
 		}
@@ -53,8 +56,13 @@ public class LoginController {
 	        return "redirect:/login";
 		}
 		
-		redirectAttributes.addAttribute("userName", ac.getUserName());
+		if(ac.isQuit()) {
+			redirectAttributes.addFlashAttribute("error", "tài khoản đã bị vô hiệu hóa");
+	        return "redirect:/login";
+		}
 		
+		redirectAttributes.addAttribute("userName", AESUtils.encrypt(ac.getUserName()));
+		redirectAttributes.addAttribute("password", AESUtils.encrypt(ac.getPassword()));
 		if(ac.getRole() == Role.ADMIN) {
 			return "redirect:/admin";
 		}
@@ -67,8 +75,13 @@ public class LoginController {
 		return "redirect:/reception";
 	}
 	
-	@GetMapping("admin")
-	public String showAdminPage() {
+	@GetMapping("doctor")
+	public String showDoctorPage() {
+		return "admin";
+	}
+	
+	@GetMapping("nurse")
+	public String showNursePage() {
 		return "admin";
 	}
 }

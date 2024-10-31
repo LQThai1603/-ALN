@@ -15,6 +15,9 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "nuser")
 public class Nuser extends Person{
+	@Column(name = "avatar")
+	private String avatar;
+	
 	@Column(name = "degree")
 	private String degree;
 	
@@ -66,5 +69,30 @@ public class Nuser extends Person{
 	public void setPrice(int price) {
 		this.price = price;
 	}
+
+	public String getAvatar() {
+		return avatar;
+	}
+
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
+	}
+
+	public OnLeave getOnLeave() {
+		return onLeave;
+	}
+
+	public void setOnLeave(OnLeave onLeave) {
+		this.onLeave = onLeave;
+	}
+
+	public List<MedicalRecord> getMedicalRecord() {
+		return medicalRecord;
+	}
+
+	public void setMedicalRecord(List<MedicalRecord> medicalRecord) {
+		this.medicalRecord = medicalRecord;
+	}
+	
 	
 }
