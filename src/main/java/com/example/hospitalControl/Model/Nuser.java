@@ -1,6 +1,8 @@
 package com.example.hospitalControl.Model;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -9,6 +11,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.MapKey;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -30,13 +34,9 @@ public class Nuser extends Person{
 	@Column(name = "price")
 	private int price;
 	
-	@OneToOne(mappedBy = "nuser")
+	@ManyToMany(mappedBy = "nuser")
 	@JsonManagedReference
-	private OnLeave onLeave;
-
-	@OneToMany(mappedBy = "nuser")
-	@JsonManagedReference
-	private List<MedicalRecord> medicalRecord;
+	private List<Patient> patient;
 	
 	public String getDegree() {
 		return degree;
@@ -78,21 +78,12 @@ public class Nuser extends Person{
 		this.avatar = avatar;
 	}
 
-	public OnLeave getOnLeave() {
-		return onLeave;
+	public List<Patient> getPatient() {
+		return patient;
 	}
 
-	public void setOnLeave(OnLeave onLeave) {
-		this.onLeave = onLeave;
+	public void setPatient(List<Patient> patient) {
+		this.patient = patient;
 	}
-
-	public List<MedicalRecord> getMedicalRecord() {
-		return medicalRecord;
-	}
-
-	public void setMedicalRecord(List<MedicalRecord> medicalRecord) {
-		this.medicalRecord = medicalRecord;
-	}
-	
 	
 }

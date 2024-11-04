@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Trang Chủ</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/admin/adminNav.css">
+	<link rel="stylesheet" href="/css/doctor/doctorOnLeave.css">
+	<link rel="stylesheet" href="a.css">
+	<style>
+
+	</style>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<!-- Sidebar Navigation -->
+			<nav class="col-md-3 col-lg-2 d-md-block sidebar">
+				<a href="/admin/admin_home" class="logo">🏨</a>
+				<ul class="nav flex-column">
+					<li class="nav-item"><a href="/admin/admin_home" class="nav-link">Trang Chủ</a></li>
+					<li class="nav-item"><a href="/admin/create_account" class="nav-link">Tạo tài khoản</a></li>
+					<li class="nav-item"><a href="/admin/control_account_doctor" class="nav-link">Quản lý bác sĩ</a>
+					</li>
+					<li class="nav-item"><a href="/admin/control_account_nurse" class="nav-link">Quản lý y tá</a></li>
+					<li class="nav-item"><a href="/admin/control_medicine" class="nav-link">Quản lý thuốc</a></li>
+					<li class="nav-item"><a href="/admin/logout" class="nav-link">Đăng Xuất</a></li>
+				</ul>
+			</nav>
+
+			<!-- Main Content Area -->
+			<main class="col-md-9 col-lg-10 main-content">
+				<h2 class="mt-4">Form Xin Nghỉ Phép</h2>
+				<form action="/admin/onleave_confirm" method="POST" class="mt-3" th:object="${onLeaveDto}">
+					<div th:if="${error != null}" class="alert alert-danger" role="alert">
+						<p th:text="${error}"></p>
+					</div>
+					<div th:if="${success != null}" class="alert alert-success" role="alert">
+						<p th:text="${success}"></p>
+					</div>
+					<input class="form-check-input" type="text" th:field="*{id}" hidden>
+					<div class="mb-3">
+						<div class="form-check">
+							<input class="form-check-input" type="checkbox" th:field="*{confirm}">
+							<label class="form-check-label" for="status">Xác nhận</label>
+						</div>
+					</div>
+					<div class="mb-3">
+						<label for="startDate" class="form-label">ID Person</label>
+						<input type="text" class="form-control" th:field="*{idPerson}" readonly>
+						<p th:if="${#fields.hasErrors('idPerson')}" th:errorclass="text-danger" th:errors="*{idPerson}">
+						</p>
+					</div>
+					<div class="mb-3">
+						<label for="startDate" class="form-label">Ngày tạo đơn xin nghỉ</label>
+						<input type="text" class="form-control" th:field="*{date}" readonly>
+						<p th:if="${#fields.hasErrors('date')}" th:errorclass="text-danger" th:errors="*{date}">
+						</p>
+					</div>
+					<div class="mb-3">
+						<label for="startDate" class="form-label">Ngày Bắt Đầu</label>
+						<input type="text" class="form-control" th:field="*{startDate}" readonly>
+						<p th:if="${#fields.hasErrors('startDate')}" th:errorclass="text-danger"
+							th:errors="*{startDate}"></p>
+					</div>
+					<div class="mb-3">
+						<label for="endDate" class="form-label">Ngày Kết Thúc</label>
+						<input type="text" class="form-control" th:field="*{endDate}" readonly>
+						<p th:if="${#fields.hasErrors('endDate')}" th:errorclass="text-danger" th:errors="*{endDate}">
+						</p>
+					</div>
+					<div class="mb-3">
+						<label for="endDate" class="form-label">Lý do</label>
+						<textarea class="form-control" rows="5" style="height: 200px; resize: vertical; width: 100%;"
+							th:field="*{reason}" readonly></textarea>
+						<p th:if="${#fields.hasErrors('reason')}" th:errorclass="text-danger" th:errors="*{reason}"></p>
+					</div>
+					<button type="submit" class="btn btn-primary">Xác nhận</button>
+				</form>
+			</main>
+		</div>
+	</div>
+</body>
+
+</html>

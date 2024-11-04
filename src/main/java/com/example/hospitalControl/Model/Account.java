@@ -1,5 +1,7 @@
 package com.example.hospitalControl.Model;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -11,6 +13,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -30,6 +33,10 @@ public class Account {
 	@Column(name = "quit")
 	private boolean quit;
 
+	@OneToMany(mappedBy = "account")
+	@JsonManagedReference
+	private List<OnLeave> onLeave;
+	
 	public String getUserName() {
 		return userName;
 	}
@@ -60,6 +67,14 @@ public class Account {
 
 	public void setQuit(boolean quit) {
 		this.quit = quit;
+	}
+
+	public List<OnLeave> getOnLeave() {
+		return onLeave;
+	}
+
+	public void setOnLeave(List<OnLeave> onLeave) {
+		this.onLeave = onLeave;
 	}
 	
 }

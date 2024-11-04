@@ -16,9 +16,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.hospitalControl.Model.Account;
 import com.example.hospitalControl.Model.AccountDto;
+import com.example.hospitalControl.Model.Nuser;
 import com.example.hospitalControl.Model.Role;
+import com.example.hospitalControl.Model.Room;
 import com.example.hospitalControl.Security.AESUtils;
 import com.example.hospitalControl.Service.AccountRepository;
+import com.example.hospitalControl.Service.NuserRepository;
 
 import jakarta.validation.Valid;
 
@@ -27,7 +30,8 @@ import jakarta.validation.Valid;
 public class LoginController {
 	@Autowired
 	AccountRepository acRepo;
-	
+	@Autowired
+	NuserRepository nuserRepo;
 	@GetMapping({""})
 	public String showLoginPage() {		
 		return "redirect:/login";
@@ -70,18 +74,20 @@ public class LoginController {
 			return "redirect:/doctor";
 		}
 		if(ac.getRole() == Role.NURSE) {
+			Nuser n = nuserRepo.findById(ac.getUserName()).orElse(null);
+			if(n == null) {
+				System.out.println("khong co y ta nay");
+				return "redirect:/login";
+			}
+			Room room = n.getRoom();
+			if(room == Room.MEDICATION_MANAGEMENT) {
+				return "redirect:/nuser_medicine_management";
+			}
+			if(room == Room.PATIENT_CARE) {
+				return "redirect:/nuser_patient_care";
+			}
 			return "redirect:/nuser";
 		}
 		return "redirect:/reception";
-	}
-	
-	@GetMapping("doctor")
-	public String showDoctorPage() {
-		return "admin";
-	}
-	
-	@GetMapping("nurse")
-	public String showNursePage() {
-		return "admin";
 	}
 }

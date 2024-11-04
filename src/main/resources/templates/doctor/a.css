@@ -1,0 +1,282 @@
+.sidebar {
+	background-color: #007bff;
+	/* Màu nền thanh điều hướng - xanh dương đậm hơn */
+	height: 100vh;
+	padding-top: 20px;
+	position: fixed;
+	/* Giữ thanh bên cố định */
+}
+
+.logo {
+	font-size: 8rem;
+	/* Tăng kích thước logo lên 6rem */
+	text-align: center;
+	display: block;
+	margin-bottom: 20px;
+	transition: transform 0.3s;
+	/* Hiệu ứng khi hover */
+}
+
+.logo:hover {
+	transform: scale(1.1);
+	/* Tăng kích thước khi hover */
+}
+
+.nav-link {
+	padding: 10px 15px;
+	color: #ffffff;
+	/* Màu chữ - trắng */
+	text-decoration: none;
+	/* Bỏ gạch chân */
+	font-size: 2rem;
+	/* Kích thước chữ cho nav-link */
+	transition: background-color 0.3s;
+	/* Hiệu ứng khi hover */
+}
+
+.nav-link:hover {
+	background-color: #0056b3;
+	/* Màu nền khi hover - xanh dương đậm hơn */
+}
+
+
+
+/* CSS cho form chính */
+.main-content {
+	margin-left: 18%;
+	padding: 20px;
+}
+
+.form-container {
+	background-color: #f8f9fa;
+	border-radius: 8px;
+	padding: 20px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	margin-top: 20px;
+}
+
+.form-container h3 {
+	color: #007bff;
+	font-weight: bold;
+	margin-bottom: 20px;
+	text-align: center;
+}
+
+.form-label {
+	font-weight: bold;
+}
+
+.form-control,
+.form-select {
+	height: 45px;
+	font-size: 1.2rem;
+}
+
+.btn-primary {
+	width: 100%;
+	padding: 10px;
+	font-size: 1.2rem;
+}
+
+.mb-3 {
+	margin-bottom: 15px;
+}
+
+.hidden {
+	display: none;
+}
+
+/* Container của phần upload avatar */
+.avatar-upload {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.avatar-upload label {
+	cursor: pointer;
+	display: inline-block;
+}
+
+/* Phần hiển thị ảnh preview */
+.avatar-preview {
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin: 10px 0;
+	border: 2px solid #ddd;
+	background-color: #f0f0f0;
+	position: relative;
+	text-align: center;
+	color: #999;
+	font-size: 14px;
+}
+
+.avatar-preview img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: none;
+}
+
+/* General Styling */
+body {
+	background-color: #f4f6f9;
+	font-family: Arial, sans-serif;
+}
+
+.main-content {
+	padding: 2rem;
+}
+
+/* Medicine Card */
+.medicine-card {
+	display: flex;
+	align-items: center;
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	transition: box-shadow 0.3s;
+	height: 150px;
+	cursor: pointer;
+	margin-bottom: 15px;
+	position: relative;
+	background-color: #fff;
+}
+
+.medicine-card:hover {
+	box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.medicine-image {
+	width: 150px;
+	height: 100%;
+	object-fit: cover;
+	border-radius: 8px;
+}
+
+.medicine-info {
+	padding-top: 15px;
+	padding-left: 15px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	flex: 1;
+}
+
+.medicine-info-item {
+	line-height: 1.6;
+	font-size: 14px;
+}
+
+/* Delete Icon */
+.delete-icon {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	color: #dc3545;
+	font-size: 1.5em;
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+
+.delete-icon:hover {
+	color: #a71d2a;
+}
+
+/* Search Bar Styling */
+.search-bar {
+	display: flex;
+	align-items: center;
+	gap: 15px;
+	margin-bottom: 20px;
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	background-color: #fff;
+}
+
+.search-bar input[type="text"],
+.search-bar input[type="date"],
+.search-bar input[type="number"] {
+	border-radius: 6px;
+	border: 1px solid #ddd;
+	padding: 8px;
+}
+
+.search-bar button[type="submit"] {
+	background-color: #007bff;
+	color: #fff;
+	border: none;
+	border-radius: 6px;
+	padding: 8px 16px;
+	cursor: pointer;
+	transition: background-color 0.3s ease;
+}
+
+.search-bar button[type="submit"]:hover {
+	background-color: #0056b3;
+}
+
+/* Add Medicine Button Styling */
+.btn-add-medicine {
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #007bff;
+	color: #fff;
+	font-size: 24px;
+	position: absolute;
+	right: 2rem;
+	top: 2rem;
+	cursor: pointer;
+	border: none;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+	transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.btn-add-medicine:hover {
+	background-color: #0056b3;
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.image-upload-container {
+	position: relative;
+	width: 150px;
+	/* Chiều rộng của khung ảnh */
+	margin: auto;
+	/* Căn giữa khung ảnh */
+}
+
+.upload-placeholder {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100px;
+	/* Chiều cao của khung ảnh */
+	border: 2px dashed #ddd;
+	border-radius: 8px;
+	cursor: pointer;
+	background-color: #f9f9f9;
+	/* Màu nền cho khung ảnh */
+}
+
+#imagePreview {
+	display: none;
+	/* Ẩn ảnh xem trước ban đầu */
+	width: 100%;
+	height: 100%;
+	/* Chiều cao tự động */
+	border-radius: 8px;
+	border: 1px solid #ddd;
+	object-fit: cover;
+	/* Đảm bảo ảnh không bị méo */
+}

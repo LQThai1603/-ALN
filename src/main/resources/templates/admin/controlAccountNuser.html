@@ -22,18 +22,17 @@
 			<nav class="col-md-3 col-lg-2 d-md-block sidebar">
 				<a href="/admin/admin_home" class="logo">🏨</a>
 				<ul class="nav flex-column">
-					<li class="nav-item"><a href="/admin/admin_home" class="nav-link">Trang Chủ</a></li>
-					<li class="nav-item"><a href="/admin/create_account_doctor" class="nav-link">Tạo tài khoản</a></li>
-					<li class="nav-item"><a href="/admin/control_account_doctor" class="nav-link">Quản lý tài khoản</a>
-					</li>
-					<li class="nav-item"><a href="#contact" class="nav-link">Liên Hệ</a></li>
-					<li class="nav-item"><a href="#settings" class="nav-link">Cài Đặt</a></li>
-					<li class="nav-item"><a href="/admin/logout" class="nav-link">Đăng Xuất</a></li>
-				</ul>
+                    <li class="nav-item"><a href="/admin/admin_home" class="nav-link">Trang Chủ</a></li>
+                    <li class="nav-item"><a href="/admin/create_account" class="nav-link">Tạo tài khoản</a></li>
+                    <li class="nav-item"><a href="/admin/control_account_doctor" class="nav-link">Quản lý bác sĩ</a></li>
+                    <li class="nav-item"><a href="/admin/control_account_nurse" class="nav-link">Quản lý y tá</a></li>
+                    <li class="nav-item"><a href="/admin/control_medicine" class="nav-link">Quản lý thuốc</a></li>
+                    <li class="nav-item"><a href="/admin/logout" class="nav-link">Đăng Xuất</a></li>
+                </ul>
 			</nav>
 			<!-- Main Content Area -->
 			<div class="main-content col-md-9 col-lg-10">
-				<h2>Quản Lý Tài Khoản y tá</h2>
+				<h2>Quản Lý Tài Khoản Y Tá</h2>
 
 				<form method="get" action="/admin/search_account_nuser" class="search-form" th:object="${searchDto}">
 					<div class="form-row">
@@ -117,7 +116,7 @@
 							<ul class="pagination justify-content-center">
 								<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
 									<a class="page-link"
-										th:href="@{/admin/control_account_nuser(page=${currentPage - 1}, size=${size})}"
+										th:href="@{/admin/control_account_nurse(page=${currentPage - 1}, size=${size})}"
 										aria-label="Previous">
 										<span aria-hidden="true">&laquo;</span>
 									</a>
@@ -125,12 +124,12 @@
 								<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
 									th:classappend="${currentPage == i} ? 'active'">
 									<a class="page-link"
-										th:href="@{/admin/control_account_nuser(page=${i}, size=${size})}"
+										th:href="@{/admin/control_account_nurse(page=${i}, size=${size})}"
 										th:text="${i + 1}">1</a>
 								</li>
 								<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
 									<a class="page-link"
-										th:href="@{/admin/control_account_nuser(page=${currentPage + 1}, size=${size})}"
+										th:href="@{/admin/control_account_nurse(page=${currentPage + 1}, size=${size})}"
 										aria-label="Next">
 										<span aria-hidden="true">&raquo;</span>
 									</a>

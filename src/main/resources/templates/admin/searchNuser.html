@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Quản Lý Tài Khoản</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
+	<Link rel="stylesheet" href="/css/admin/adminNav.css">
+	<Link rel="stylesheet" href="/css/admin/adminControlAccountDoctor.css">
+
+
+</head>
+
+<body>
+
+	<div class="container-fluid">
+		<div class="row">
+			<!-- Sidebar Navigation -->
+			<nav class="col-md-3 col-lg-2 d-md-block sidebar">
+				<a href="/admin/admin_home" class="logo">🏨</a>
+				<ul class="nav flex-column">
+                    <li class="nav-item"><a href="/admin/admin_home" class="nav-link">Trang Chủ</a></li>
+                    <li class="nav-item"><a href="/admin/create_account" class="nav-link">Tạo tài khoản</a></li>
+                    <li class="nav-item"><a href="/admin/control_account_doctor" class="nav-link">Quản lý bác sĩ</a></li>
+                    <li class="nav-item"><a href="/admin/control_account_nurse" class="nav-link">Quản lý y tá</a></li>
+                    <li class="nav-item"><a href="/admin/control_medicine" class="nav-link">Quản lý thuốc</a></li>
+                    <li class="nav-item"><a href="/admin/logout" class="nav-link">Đăng Xuất</a></li>
+                </ul>
+			</nav>
+			<!-- Main Content Area -->
+			<div class="main-content col-md-9 col-lg-10">
+				<h2>Quản Lý Tài Khoản Y Tá</h2>
+
+				<form method="get" action="/admin/search_account_nuser" class="search-form" th:object="${searchDto}">
+					<div class="form-row">
+						<!-- IP Person Input -->
+						<div class="">
+							<label for="idPerson">ID Person</label>
+							<input type="text" class="form-control" id="idPerson" name="idPerson"
+								placeholder="Nhập ID Person" th:field="*{idPerson}">
+						</div>
+
+						<!-- Name Input -->
+						<div class="">
+							<label for="name">Tên</label>
+							<input type="text" class="form-control" id="name" name="name" placeholder="Nhập Tên"
+								th:field="*{name}">
+						</div>
+
+						<!-- Room Input -->
+						<div class="">
+							<label class="form-label">Phòng ban</label>
+							<select class="form-select" th:field="*{room}">
+								<option value="" selected>Chọn phòng ban</option>
+								<option value="PATIENT_CARE">Patient Care - Chăm sóc bệnh nhân</option>
+								<option value="MEDICATION_MANAGEMENT">Medication Management - Quản lý thuốc</option>
+								<option value="LABORATORY">Laboratory - Phòng xét nghiệm</option>
+								<option value="RADIOLOGY_DEPARTMENT">Radiology Department - Khoa X-quang</option>
+								<option value="ELECTROCARDIOGRAPHY">Electrocardiography - Điện tâm đồ</option>
+								<option value="PULMONARY_FUNCTION_TEST">Pulmonary Function Test - Kiểm tra chức năng
+									phổi</option>
+								<option value="ECHOCARDIOGRAPHY">Echocardiography - Siêu âm tim</option>
+								<option value="BONE_DENSITOMETRY">Bone Densitometry - Đo mật độ xương</option>
+								<option value="ENDOSCOPY">Endoscopy - Nội soi</option>
+								<option value="ELECTROENCEPHALOGRAPHY">Electroencephalography - Điện não đồ</option>
+								<option value="CARDIAC_DIAGNOSTICS">Cardiac Diagnostics - Chẩn đoán tim mạch</option>
+							</select>
+						</div>
+
+						<!-- Phone Number Input -->
+						<div class="">
+							<label for="phoneNumber">Số điện thoại</label>
+							<input type="text" class="form-control" id="phoneNumber" name="phoneNumber"
+								placeholder="Nhập Số Điện Thoại" th:field="*{phoneNumber}">
+						</div>
+						<!-- Search Button -->
+						<button type="submit" class="btn btn-primary">Tìm kiếm</button>
+					</div>
+				</form>
+
+
+				<!-- User Cards (Vertical Layout) -->
+				<div id="user-list" th:each="nuser : ${nusers}">
+					<!-- Example of a single user card -->
+					<div class="user-card" th:attr="onclick='showNuserInfor(\'' + ${nuser.idPerson} + '\')'">
+						<!-- Avatar -->
+						<img class="user-avatar" th:src="@{'/avatar/' + ${nuser.avatar}}"
+							alt="Ảnh Đại Diện Người Dùng">
+
+						<!-- User Information -->
+						<div class="user-info">
+							<p class="user-info-item"><span><strong>IP: </strong></span><span
+									th:text="${nuser.idPerson}"></span></p>
+							<p class="user-info-item"><span><strong>Tên: </strong></span><span
+									th:text="${nuser.name}"></span></p>
+							<p class="user-info-item"><span><strong>Phòng ban: </strong></span> <span
+									th:text="${nuser.room}"></span></p>
+							<p class="user-info-item"><span><strong>Số điện thoại: </strong></span> <span
+									th:text="${nuser.phoneNumber}"></span></p>
+						</div>
+
+						<!-- Delete Icon -->
+						<i class="bi bi-x-circle delete-icon"
+							th:attr="onclick='event.stopPropagation(); confirmDelete(\'' + ${nuser.idPerson} + '\')'"></i>
+
+					</div>
+				</div>
+
+				<!-- Pagination -->
+				<div class="row">
+					<div class="col-md-12">
+						<nav aria-label="Page navigation">
+							<ul class="pagination justify-content-center">
+								<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+									<a class="page-link"
+										th:href="@{/admin/search_account_nuser_continue(page=${currentPage - 1}, size=${size}, idperson=${idperson}, name=${name}, phonenumber=${phonenumber}, room=${room})}"
+										aria-label="Previous">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+								<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+									th:classappend="${currentPage == i} ? 'active'">
+									<a class="page-link"
+										th:href="@{/admin/search_account_nuser_continue(page=${i}, size=${size}, idperson=${idperson}, name=${name}, phonenumber=${phonenumber}, room=${room})}"
+										th:text="${i + 1}">1</a>
+								</li>
+								<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+									<a class="page-link"
+										th:href="@{/admin/search_account_nuser_continue(page=${currentPage + 1}, size=${size}, idperson=${idperson}, name=${name}, phonenumber=${phonenumber}, room=${room})}"
+										aria-label="Next">
+										<span aria-hidden="true">&raquo;</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+	<script>
+
+		function confirmDelete(idNuser) {
+			const confirmation = confirm("Bạn có chắc chắn muốn xóa người dùng này?");
+			if (confirmation) {
+				// Nếu người dùng chọn OK, chuyển hướng đến trang khác
+				window.location.href = `/admin/delete_nuser?idnuser=${idNuser}`; // Thay đổi link theo nhu cầu của bạn
+				alert("Người dùng đã được xóa thành công!");
+			}
+		}
+
+		function showNuserInfor(idNuser) {
+			window.location.href = `/admin/nuser_information?idnuser=${idNuser}`;
+		}
+
+	</script>
+
+</body>
+
+</html>

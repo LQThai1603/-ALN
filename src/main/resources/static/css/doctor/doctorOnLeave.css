@@ -1,0 +1,14 @@
+.main-content {
+	margin-left: 18%;
+	padding-right: 2%;
+	padding-top: 40px;
+}
+
+/* Custom styles for the leave request form */
+.form-label {
+	font-weight: bold;
+}
+
+.form-check-label {
+	margin-left: 5px;
+}

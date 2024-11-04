@@ -14,6 +14,6 @@ public interface NuserRepository extends JpaRepository<Nuser, String>{
 		       "AND n.name LIKE %:name% " +
 		       "AND n.phoneNumber LIKE %:phoneNumber% " +
 		       "AND (:room IS NULL OR n.room = :room)")
-	Page<Nuser> findByIpPersonUserNameSpecializedPhoneNumber(String idPerson, String name, Room room,
+	Page<Nuser> findByIpPersonUserNameRoomPhoneNumber(String idPerson, String name, Room room,
 			String phoneNumber, Pageable pageable);
 }

@@ -1,11 +1,14 @@
 package com.example.hospitalControl.Model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -16,26 +19,31 @@ import jakarta.persistence.Table;
 public class OnLeave {
 	@Id
 	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@Column(name = "idperson")
 	private String idPerson;
 	
 	@Column(name = "startdate")
-	private LocalDateTime startDate;
+	private LocalDate startDate;
 	
 	@Column(name = "enddate")
-	private LocalDateTime endDate;
+	private LocalDate endDate;
 	
-	@OneToOne
-	@JsonBackReference
-	@JoinColumn(name = "idperson", referencedColumnName = "idperson", insertable = false, updatable = false)
-	private Doctor doctor;
+	@Column(name = "reason", columnDefinition = "TEXT")
+	private String reason;
 	
-	@OneToOne
+	@Column(name = "confirm")
+	private boolean confirm;
+	
+	@Column(name = "createdate")
+	private LocalDate createDate;
+	
+	@ManyToOne
 	@JsonBackReference
-	@JoinColumn(name = "idperson", referencedColumnName = "idperson", insertable = false, updatable = false)
-	private Nuser nuser;
+	@JoinColumn(name = "idperson", referencedColumnName = "userName", insertable = false, updatable = false)	
+	private Account account;
 
 	public int getId() {
 		return id;
@@ -53,20 +61,54 @@ public class OnLeave {
 		this.idPerson = idPerson;
 	}
 
-	public LocalDateTime getStartDate() {
+	public LocalDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(LocalDateTime startDate) {
+	public void setStartDate(LocalDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public LocalDateTime getEndDate() {
+	public LocalDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(LocalDateTime endDate) {
+	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	public boolean isConfirm() {
+		return confirm;
+	}
+
+	public void setConfirm(boolean confirm) {
+		this.confirm = confirm;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
+	public LocalDate getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(LocalDate createDate) {
+		this.createDate = createDate;
+	}	
+	
+	
 	
 }

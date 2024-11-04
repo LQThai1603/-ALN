@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Trang Chủ</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="./a.css">
+	<link rel="stylesheet" href="/css/admin/adminCreateAccount.css">
+	<link rel="stylesheet" href="/css/admin/adminNav.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+	<style>
+		.input-group {
+			position: relative;
+		}
+
+		.input-group .toggle-password {
+			position: absolute;
+			right: 10px;
+			top: 50%;
+			transform: translateY(-50%);
+			cursor: pointer;
+		}
+
+		/* CSS cho overlay */
+		.overlay {
+			position: fixed;
+			/* Để overlay phủ toàn bộ cửa sổ */
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.3);
+			/* Màu tối với độ trong suốt */
+			display: none;
+			/* Ẩn overlay mặc định */
+			z-index: 10;
+			/* Để overlay ở trên cùng */
+			pointer-events: none;
+			/* Không chặn sự kiện chuột */
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<!-- Sidebar Navigation -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+                <a href="/nuser/nuser_home" class="logo">🏨</a>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a href="/nuser/nuser_home" class="nav-link">Trang Chủ</a></li>
+                    <li class="nav-item"><a href="/nuser/profile" class="nav-link">Hồ sơ</a></li>
+                    <li class="nav-item"><a href="/nuser/control_account_doctor" class="nav-link">Công việc</a></li>
+                    <li class="nav-item"><a href="/nuser/control_account_nurse" class="nav-link">xin nghỉ</a></li>
+                    <li class="nav-item"><a href="/nuser/logout" class="nav-link">Đăng Xuất</a></li>
+                </ul>
+            </nav>
+
+			<main class="col-md-9 col-lg-10 main-content position-relative"> <!-- Thêm class position-relative -->
+				<div class="overlay"></div> <!-- Thêm overlay -->
+				<div id="nuserForm" class="form-container">
+					<h3>Thông tin Y tá</h3>
+					<form id="loginForm" action="/admin/change_nuser_information" th:object="${createNuserDto}">
+						<div class="avatar-upload mb-3">
+							<label for="avatarNuser">
+								<div class="avatar-preview">
+									<img id="avatarPreview" style="display: block;" th:src="@{'/avatar/' + ${avatar}}"
+										alt="Avatar">
+								</div>
+							</label>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Tài khoản</label>
+							<input class="form-control mb-3" th:field="*{userName}" readonly>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Họ và tên</label>
+							<input type="text" class="form-control" th:field="*{name}">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Tuổi</label>
+							<input type="number" class="form-control" th:field="*{age}">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Email</label>
+							<input type="email" class="form-control" th:field="*{email}">
+							</p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Giới tính</label>
+							<input type="text" class="form-control" th:field="*{sex}">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Số điện thoại</label>
+							<input type="text" class="form-control" th:field="*{phoneNumber}">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Bằng cấp</label>
+							<textarea class="form-control" th:field="*{degree}" rows="5"
+								style="height: 200px; resize: vertical; width: 100%;"></textarea>
+							</p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Phòng ban</label>
+							<input type="text" class="form-control" th:field="*{room}">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Kinh nghiệm (năm)</label>
+							<input type="number" class="form-control" th:field="*{yearsExperience}">
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Giá dịch vụ</label>
+							<input type="number" step="100000" class="form-control" th:field="*{price}" readonly>
+							</p>
+						</div>
+					</form>
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

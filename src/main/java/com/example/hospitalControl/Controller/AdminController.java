@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,19 +28,27 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.hospitalControl.Model.Account;
 import com.example.hospitalControl.Model.AccountDto;
 import com.example.hospitalControl.Model.CreateDoctorDto;
+import com.example.hospitalControl.Model.CreateMedicineDto;
 import com.example.hospitalControl.Model.CreateNuserDto;
 import com.example.hospitalControl.Model.Doctor;
+import com.example.hospitalControl.Model.Medicine;
 import com.example.hospitalControl.Model.Nuser;
+import com.example.hospitalControl.Model.OnLeave;
+import com.example.hospitalControl.Model.OnLeaveConfirm;
+import com.example.hospitalControl.Model.OnLeaveDto;
 import com.example.hospitalControl.Model.Role;
 import com.example.hospitalControl.Model.Room;
 import com.example.hospitalControl.Model.SearchDoctorDto;
+import com.example.hospitalControl.Model.SearchMedicineDto;
 import com.example.hospitalControl.Model.SearchNuserDto;
 import com.example.hospitalControl.Model.Sex;
 import com.example.hospitalControl.Model.Specialized;
 import com.example.hospitalControl.Security.AESUtils;
 import com.example.hospitalControl.Service.AccountRepository;
 import com.example.hospitalControl.Service.DoctorRepository;
+import com.example.hospitalControl.Service.MedicineRepository;
 import com.example.hospitalControl.Service.NuserRepository;
+import com.example.hospitalControl.Service.OnLeaveRepository;
 
 import jakarta.validation.Valid;
 
@@ -56,6 +65,12 @@ public class AdminController {
 
 	@Autowired
 	NuserRepository nuserRepo;
+
+	@Autowired
+	MedicineRepository medicineRepo;
+	
+	@Autowired
+	OnLeaveRepository onLeaveRepo;
 
 	@GetMapping("")
 	public String showAdminPage(@RequestParam("userName") String userName, @RequestParam("password") String password)
@@ -222,7 +237,8 @@ public class AdminController {
 
 	@GetMapping("search_account_doctor")
 	public String showSearchAccountDoctorPage(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "3") int size, Model model, @ModelAttribute SearchDoctorDto searchDto) {
+			@RequestParam(defaultValue = "3") int size, Model model, @ModelAttribute SearchDoctorDto searchDto,
+			RedirectAttributes redirectAttributes) {
 		if (account == null) {
 			return "redirect:/login";
 		}
@@ -231,31 +247,48 @@ public class AdminController {
 		searchDto.setName(searchDto.getName().trim());
 		searchDto.setPhoneNumber(searchDto.getPhoneNumber().trim());
 
+		redirectAttributes.addAttribute("idperson", searchDto.getIdPerson());
+		redirectAttributes.addAttribute("name", searchDto.getName());
+		redirectAttributes.addAttribute("phonenumber", searchDto.getPhoneNumber());
+		redirectAttributes.addAttribute("specialized", searchDto.getSpecialized());
+		return "redirect:/admin/search_account_doctor_continue";
+	}
+
+	@GetMapping("search_account_doctor_continue")
+	public String showSearchAccountDoctorContinuePage(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size, @RequestParam String idperson, @RequestParam String name,
+			@RequestParam String phonenumber, @RequestParam String specialized, RedirectAttributes redirectAttributes,
+			Model model) {
+		if (account == null) {
+			return "redirect:/login";
+		}
 		Pageable pageable = PageRequest.of(page, size);
 		Page<Doctor> doctors = null;
 
-		if (searchDto.getIdPerson().equals("") && searchDto.getName().equals("")
-				&& searchDto.getPhoneNumber().equals("") && searchDto.getSpecialized().equals("")) {
+		if (idperson.equals("") && name.equals("") && phonenumber.equals("") && specialized.equals("")) {
 			doctors = doctorRepo.findAll(pageable);
 
 		} else {
 			Specialized specializedValue;
 			try {
-				specializedValue = Specialized.valueOf(searchDto.getSpecialized());
+				specializedValue = Specialized.valueOf(specialized);
 			} catch (IllegalArgumentException e) {
 				// Xử lý trường hợp không có giá trị trong enum
 				specializedValue = null; // hoặc giá trị mặc định khác
 			}
-			doctors = doctorRepo.findByIpPersonUserNameSpecializedPhoneNumber(searchDto.getIdPerson(),
-					searchDto.getName(), specializedValue, searchDto.getPhoneNumber(), pageable);
+			doctors = doctorRepo.findByIpPersonUserNameSpecializedPhoneNumber(idperson, name, specializedValue,
+					phonenumber, pageable);
 		}
-
-		model.addAttribute("searchDto", searchDto);
+		model.addAttribute("searchDto", new SearchDoctorDto());
 		model.addAttribute("doctors", doctors.getContent());
 		model.addAttribute("currentPage", doctors.getNumber());
 		model.addAttribute("totalPages", doctors.getTotalPages());
 		model.addAttribute("totalItems", doctors.getTotalElements());
-		return "/admin/controlAccountDoctor";
+		model.addAttribute("idperson", idperson);
+		model.addAttribute("name", name);
+		model.addAttribute("phonenumber", phonenumber);
+		model.addAttribute("specialized", specialized);
+		return "/admin/searchDoctor";
 	}
 
 	@GetMapping("/delete_doctor")
@@ -269,10 +302,11 @@ public class AdminController {
 
 		Doctor d = doctorRepo.findById(iddoctor).orElse(null);
 		Account a = accountRepo.findById(iddoctor).orElse(null);
-		
+
 		if (d == null && a == null) {
 			System.out.println("không có bác sĩ này");
 		} else {
+			// xu ly xoa tai day
 			doctorRepo.delete(d);
 			accountRepo.delete(a);
 			System.out.println("xóa bác sĩ thành công");
@@ -294,7 +328,7 @@ public class AdminController {
 		if (account == null) {
 			return "redirect:/login";
 		}
-		
+
 		Account a = accountRepo.findById(iddoctor).orElse(null);
 		Doctor d = doctorRepo.findById(iddoctor).orElse(null);
 
@@ -309,8 +343,8 @@ public class AdminController {
 		createDoctorDto.setSpecialized(d.getSpecialized().toString());
 		createDoctorDto.setUserName(d.getIdPerson());
 		createDoctorDto.setYearsExperience(d.getYearsExperience());
-		createDoctorDto.setQuit(a.isQuit());	
-		
+		createDoctorDto.setQuit(a.isQuit());
+
 		model.addAttribute("createDoctorDto", createDoctorDto);
 		model.addAttribute("avatar", d.getAvatar());
 
@@ -369,7 +403,7 @@ public class AdminController {
 
 		return "redirect:/admin/doctor_information";
 	}
-	
+
 	@GetMapping("/control_account_nurse")
 	public String showControlAccountNuserPage(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "3") int size, Model model) {
@@ -381,7 +415,7 @@ public class AdminController {
 
 		Pageable pageable = PageRequest.of(page, size);
 		Page<Nuser> nusers = nuserRepo.findAll(pageable);
-		
+
 		model.addAttribute("searchDto", searchDto);
 		model.addAttribute("nusers", nusers.getContent());
 		model.addAttribute("currentPage", nusers.getNumber());
@@ -389,10 +423,11 @@ public class AdminController {
 		model.addAttribute("totalItems", nusers.getTotalElements());
 		return "/admin/controlAccountNuser";
 	}
-	
+
 	@GetMapping("search_account_nuser")
 	public String showSearchAccountNuserPage(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "3") int size, Model model, @ModelAttribute SearchNuserDto searchDto) {
+			@RequestParam(defaultValue = "3") int size, Model model, @ModelAttribute SearchNuserDto searchDto,
+			RedirectAttributes redirectAttributes) {
 		if (account == null) {
 			return "redirect:/login";
 		}
@@ -401,35 +436,49 @@ public class AdminController {
 		searchDto.setName(searchDto.getName().trim());
 		searchDto.setPhoneNumber(searchDto.getPhoneNumber().trim());
 
+		redirectAttributes.addAttribute("idperson", searchDto.getIdPerson());
+		redirectAttributes.addAttribute("name", searchDto.getName());
+		redirectAttributes.addAttribute("phonenumber", searchDto.getPhoneNumber());
+		redirectAttributes.addAttribute("room", searchDto.getRoom());
+		return "redirect:/admin/search_account_nuser_continue";
+	}
+
+	@GetMapping("search_account_nuser_continue")
+	public String showSearchAccountNuserContinuePage(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size, @RequestParam String idperson, @RequestParam String name,
+			@RequestParam String phonenumber, @RequestParam String room, RedirectAttributes redirectAttributes,
+			Model model) {
+		if (account == null) {
+			return "redirect:/login";
+		}
 		Pageable pageable = PageRequest.of(page, size);
 		Page<Nuser> nusers = null;
 
-		if (searchDto.getIdPerson().equals("") && searchDto.getName().equals("")
-				&& searchDto.getPhoneNumber().equals("") && searchDto.getRoom().equals("")) {
+		if (idperson.equals("") && name.equals("") && phonenumber.equals("") && room.equals("")) {
 			nusers = nuserRepo.findAll(pageable);
-			System.out.println("---" + nusers.getTotalElements());
 
 		} else {
 			Room roomValue;
 			try {
-				roomValue = Room.valueOf(searchDto.getRoom());
+				roomValue = Room.valueOf(room);
 			} catch (IllegalArgumentException e) {
 				// Xử lý trường hợp không có giá trị trong enum
 				roomValue = null; // hoặc giá trị mặc định khác
 			}
-			nusers = nuserRepo.findByIpPersonUserNameSpecializedPhoneNumber(searchDto.getIdPerson(),
-					searchDto.getName(), roomValue, searchDto.getPhoneNumber(), pageable);
-			System.out.println("+++" + nusers.getTotalElements());
+			nusers = nuserRepo.findByIpPersonUserNameRoomPhoneNumber(idperson, name, roomValue, phonenumber, pageable);
 		}
-
-		model.addAttribute("searchDto", searchDto);
+		model.addAttribute("searchDto", new SearchNuserDto());
 		model.addAttribute("nusers", nusers.getContent());
 		model.addAttribute("currentPage", nusers.getNumber());
 		model.addAttribute("totalPages", nusers.getTotalPages());
 		model.addAttribute("totalItems", nusers.getTotalElements());
-		return "/admin/controlAccountNuser";
+		model.addAttribute("idperson", idperson);
+		model.addAttribute("name", name);
+		model.addAttribute("phonenumber", phonenumber);
+		model.addAttribute("room", room);
+		return "/admin/searchNuser";
 	}
-	
+
 	@GetMapping("/delete_nuser")
 	public String deleteNuser(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size,
 			@RequestParam String idnuser, Model model) {
@@ -441,10 +490,11 @@ public class AdminController {
 
 		Nuser n = nuserRepo.findById(idnuser).orElse(null);
 		Account a = accountRepo.findById(idnuser).orElse(null);
-		
+
 		if (n == null && a == null) {
 			System.out.println("không có y tá này");
 		} else {
+			// xu ly xoa tai day
 			nuserRepo.delete(n);
 			accountRepo.delete(a);
 			System.out.println("xóa y tá thành công");
@@ -460,13 +510,13 @@ public class AdminController {
 		model.addAttribute("totalItems", nusers.getTotalElements());
 		return "/admin/controlAccountNuser";
 	}
-	
+
 	@GetMapping("/nuser_information")
 	public String showNusertInformation(@RequestParam String idnuser, Model model) {
 		if (account == null) {
 			return "redirect:/login";
 		}
-		
+
 		Account a = accountRepo.findById(idnuser).orElse(null);
 		Nuser n = nuserRepo.findById(idnuser).orElse(null);
 
@@ -483,13 +533,13 @@ public class AdminController {
 		createNuserDto.setYearsExperience(n.getYearsExperience());
 		createNuserDto.setQuit(a.isQuit());
 		createNuserDto.setPrice(n.getPrice());
-		
+
 		model.addAttribute("createNuserDto", createNuserDto);
 		model.addAttribute("avatar", n.getAvatar());
 
 		return "admin/showNuserInformation";
 	}
-	
+
 	@PostMapping("/change_nuser_information")
 	public String changeNuserInformation(@Valid @ModelAttribute CreateNuserDto createNuserDto, BindingResult result,
 			Model model, RedirectAttributes redirectAttributes) {
@@ -520,7 +570,7 @@ public class AdminController {
 		n.setRoom(Room.valueOf(createNuserDto.getRoom()));
 		n.setYearsExperience(createNuserDto.getYearsExperience());
 		n.setPrice(createNuserDto.getPrice());
-		
+
 		String upLoadDir = "public/avatar/";
 		MultipartFile avatar = createNuserDto.getAvatarNuser();
 		if (!avatar.isEmpty()) {
@@ -544,6 +594,356 @@ public class AdminController {
 		return "redirect:/admin/nuser_information";
 	}
 
+	@GetMapping("control_medicine")
+	public String showControlMedicinePage(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size, Model model) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+		CreateMedicineDto createMedicineDto = new CreateMedicineDto();
+
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Medicine> medicines = medicineRepo.findAll(pageable);
+
+		model.addAttribute("createMedicineDto", createMedicineDto);
+		model.addAttribute("medicines", medicines);
+		model.addAttribute("searchDto", new SearchMedicineDto());
+		model.addAttribute("currentPage", medicines.getNumber());
+		model.addAttribute("totalPages", medicines.getTotalPages());
+		model.addAttribute("totalItems", medicines.getTotalElements());
+		return "/admin/controlMedicine";
+	}
+
+	@PostMapping("create_medicine")
+	public String createMedicine(@Valid @ModelAttribute CreateMedicineDto createMedicineDto, BindingResult result,
+			@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size, Model model,
+			RedirectAttributes redirectAttributes) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+		if (result.hasErrors()) {
+			SearchMedicineDto searchDto = new SearchMedicineDto();
+			Pageable pageable = PageRequest.of(page, size);
+			Page<Medicine> medicines = medicineRepo.findAll(pageable);
+			model.addAttribute("medicines", medicines);
+			model.addAttribute("searchDto", searchDto);
+			model.addAttribute("currentPage", medicines.getNumber());
+			model.addAttribute("totalPages", medicines.getTotalPages());
+			model.addAttribute("totalItems", medicines.getTotalElements());
+			result.getFieldErrors().forEach(error -> {
+				System.out.println("Field: " + error.getField()); // Tên trường bị lỗi
+				System.out.println("Error: " + error.getDefaultMessage()); // Thông báo lỗi
+			});
+			return "/admin/controlMedicine";
+		}
+		Medicine m = new Medicine();
+		m.setName(createMedicineDto.getName());
+		m.setPrice(createMedicineDto.getPrice());
+		m.setQuantity(createMedicineDto.getQuantity());
+		m.setExpirationDate(createMedicineDto.getExpirationDate());
+		String upLoadDir = "public/medicine/";
+		MultipartFile image = createMedicineDto.getImage();
+		if (!image.isEmpty()) {
+			try (InputStream inputStream = image.getInputStream()) {
+				Files.copy(inputStream, Paths.get(upLoadDir + m.getName() + ".png"),
+						StandardCopyOption.REPLACE_EXISTING);
+				m.setImage(m.getName() + ".png");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			m.setImage("default.png");
+		}
+		medicineRepo.save(m);
+		return "redirect:/admin/control_medicine";
+	}
+
+	@GetMapping("search_medicine")
+	public String showSearchMedicinePage(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size, Model model, @ModelAttribute SearchMedicineDto searchDto,
+			RedirectAttributes redirectAttributes) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+
+		searchDto.setNameMedicine(searchDto.getNameMedicine().trim());
+
+		System.out.println("date: " + searchDto.getExpirationDate());
+		System.out.println("name: " + searchDto.getNameMedicine());
+		System.out.println("price: " + searchDto.getPrice());
+		System.out.println("quantity: " + searchDto.getQuantity());
+
+		if (searchDto.getExpirationDate() == null) {
+			searchDto.setExpirationDate(LocalDate.of(3030, 1, 30));
+		}
+
+		redirectAttributes.addAttribute("name", searchDto.getNameMedicine());
+		redirectAttributes.addAttribute("expirationdate", searchDto.getExpirationDate());
+		redirectAttributes.addAttribute("quantity", searchDto.getQuantity());
+		redirectAttributes.addAttribute("price", searchDto.getPrice());
+		return "redirect:/admin/search_medicine_continue";
+	}
+
+	@GetMapping("search_medicine_continue")
+	public String showSearchMedicineContinuePage(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size, @RequestParam String name,
+			@RequestParam LocalDate expirationdate, @RequestParam int quantity, @RequestParam int price,
+			RedirectAttributes redirectAttributes, Model model) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Medicine> medicines = null;
+
+		if (name.equals("") && expirationdate == null && quantity == 0 && price == 0) {
+			medicines = medicineRepo.findAll(pageable);
+
+		} else {
+
+			medicines = medicineRepo.findByNameExpirationDateQuantityPrice(name, expirationdate, quantity, price,
+					pageable);
+		}
+		model.addAttribute("createMedicineDto", new CreateMedicineDto());
+		model.addAttribute("searchDto", new SearchMedicineDto());
+		model.addAttribute("medicines", medicines.getContent());
+		model.addAttribute("currentPage", medicines.getNumber());
+		model.addAttribute("totalPages", medicines.getTotalPages());
+		model.addAttribute("totalItems", medicines.getTotalElements());
+		model.addAttribute("name", name);
+		model.addAttribute("expirationdate", expirationdate);
+		model.addAttribute("quantity", quantity);
+		model.addAttribute("price", price);
+		return "/admin/searchMedicine";
+	}
+
+	@GetMapping("/delete_medicine")
+	public String deleteMedicine(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "3") int size,
+			@RequestParam int idmedicine, Model model) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+
+		Medicine m = medicineRepo.findById(idmedicine).orElse(null);
+		System.out.println(m == null);
+
+		if (m == null) {
+			System.out.println("không có thuốc này");
+		} else {
+			// xu ly xoa lien quan tai day
+			medicineRepo.delete(m);
+			System.out.println("xóa bác thuốc thành công");
+		}
+
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Medicine> medicines = medicineRepo.findAll(pageable);
+
+		model.addAttribute("createMedicineDto", new CreateMedicineDto());
+		model.addAttribute("medicines", medicines);
+		model.addAttribute("searchDto", new SearchMedicineDto());
+		model.addAttribute("currentPage", medicines.getNumber());
+		model.addAttribute("totalPages", medicines.getTotalPages());
+		model.addAttribute("totalItems", medicines.getTotalElements());
+		return "/admin/controlMedicine";
+	}
+
+	@GetMapping("medicine_information")
+	public String showMedicineInformationPage(@RequestParam int idmedicine, Model model) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+		Medicine m = medicineRepo.findById(idmedicine).orElse(null);
+		if (m == null) {
+			System.out.println("không có thuốc này");
+		}
+
+		CreateMedicineDto createMedicineDto = new CreateMedicineDto();
+		createMedicineDto.setId(m.getIdMedicine());
+		createMedicineDto.setExpirationDate(m.getExpirationDate());
+		createMedicineDto.setName(m.getName());
+		createMedicineDto.setPrice(m.getPrice());
+		createMedicineDto.setQuantity(m.getQuantity());
+
+		model.addAttribute("createMedicineDto", createMedicineDto);
+		model.addAttribute("imageMedicine", m.getImage());
+		return "/admin/showMedicineInformation";
+	}
+
+	@PostMapping("change_medicine_information")
+	public String changeMedicineInformation(@Valid @ModelAttribute CreateMedicineDto createMedicineDto,
+			BindingResult result, RedirectAttributes redirectAttributes) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+		if (result.hasErrors()) {
+			result.getFieldErrors().forEach(error -> {
+				System.out.println("Field: " + error.getField()); // Tên trường bị lỗi
+				System.out.println("Error: " + error.getDefaultMessage()); // Thông báo lỗi
+			});
+			return "/admin/showMedicineInformation";
+		}
+
+		Medicine m = new Medicine();
+		m.setIdMedicine(createMedicineDto.getId());
+		m.setExpirationDate(createMedicineDto.getExpirationDate());
+		m.setName(createMedicineDto.getName());
+		m.setPrice(createMedicineDto.getPrice());
+		m.setQuantity(createMedicineDto.getQuantity());
+		MultipartFile image = createMedicineDto.getImage();
+		String upLoadDir = "public/medicine/";
+		if (!image.isEmpty()) {
+			try (InputStream inputStream = image.getInputStream()) {
+				Files.copy(inputStream, Paths.get(upLoadDir + m.getName() + ".png"),
+						StandardCopyOption.REPLACE_EXISTING);
+				m.setImage(m.getName() + ".png");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} else {
+			m.setImage("default.png");
+		}
+		medicineRepo.save(m);
+		redirectAttributes.addAttribute("idmedicine", m.getIdMedicine());
+		return "redirect:/admin/medicine_information";
+	}
+	
+	@GetMapping("control_onleave")
+	public String showControlOnLeavePage(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size, Model model) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+		OnLeaveConfirm onLeaveConfirm = new OnLeaveConfirm();
+
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createDate"));
+		Page<OnLeave> onLeaves = onLeaveRepo.findAll(pageable);
+		
+
+		model.addAttribute("onLeaveConfirm", onLeaveConfirm);
+		model.addAttribute("onLeaves", onLeaves);
+		model.addAttribute("searchDto", new SearchMedicineDto());
+		model.addAttribute("currentPage", onLeaves.getNumber());
+		model.addAttribute("totalPages", onLeaves.getTotalPages());
+		model.addAttribute("totalItems", onLeaves.getTotalElements());
+		return "/admin/controlOnLeave";
+	}
+	
+	@GetMapping("/onleave_information")
+	public String showOnLeavetInformation(@RequestParam int idonleave, Model model) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+
+		OnLeave o = onLeaveRepo.findById(idonleave).orElse(null);
+		
+		OnLeaveConfirm onLeaveConfirm = new OnLeaveConfirm();
+		onLeaveConfirm.setConfirm(o.isConfirm());
+		onLeaveConfirm.setIdPerson(o.getIdPerson());
+		onLeaveConfirm.setId(o.getId());
+		onLeaveConfirm.setEndDate(o.getEndDate());
+		onLeaveConfirm.setStartDate(o.getStartDate());
+		onLeaveConfirm.setReason(o.getReason());
+		onLeaveConfirm.setDate(o.getCreateDate());
+		model.addAttribute("onLeaveDto", onLeaveConfirm);
+
+		return "admin/showOnLeaveInformation";
+	}
+	
+	@PostMapping("/onleave_confirm")
+	public String confirmOnLeave(@Valid @ModelAttribute OnLeaveConfirm onLeaveConfirm,
+			BindingResult result, RedirectAttributes redirectAttributes) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+		if (result.hasErrors()) {
+			result.getFieldErrors().forEach(error -> {
+				System.out.println("Field: " + error.getField()); // Tên trường bị lỗi
+				System.out.println("Error: " + error.getDefaultMessage()); // Thông báo lỗi
+			});
+			return "/admin/showOnLeaveInformation";
+		}
+
+		OnLeave o = new OnLeave();
+		o.setConfirm(onLeaveConfirm.isConfirm());
+		o.setEndDate(onLeaveConfirm.getEndDate());
+		o.setId(onLeaveConfirm.getId());
+		o.setIdPerson(onLeaveConfirm.getIdPerson());
+		o.setReason(onLeaveConfirm.getReason());
+		o.setStartDate(onLeaveConfirm.getStartDate());
+		onLeaveRepo.save(o);
+		redirectAttributes.addAttribute("idonleave", o.getId());
+		return "redirect:/admin/onleave_information";
+	}
+	
+	@GetMapping("search_onleave")
+	public String showSearchOPage(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size, Model model, @ModelAttribute OnLeaveConfirm onLeaveConfirm,
+			RedirectAttributes redirectAttributes) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+		if (onLeaveConfirm.getDate() == null) {
+			onLeaveConfirm.setDate(LocalDate.of(2000, 01, 01));
+		}
+		if (onLeaveConfirm.getStartDate() == null) {
+			onLeaveConfirm.setStartDate(LocalDate.of(2000, 01, 01));
+		}
+		if (onLeaveConfirm.getEndDate() == null) {
+			onLeaveConfirm.setEndDate(LocalDate.of(2000, 01, 01));
+		}
+		System.out.println(LocalDate.of(1999, 01, 01));
+		System.out.println(onLeaveConfirm.getDate());
+		System.out.println(onLeaveConfirm.getStartDate());
+		System.out.println(onLeaveConfirm.getEndDate());
+		onLeaveConfirm.setIdPerson(onLeaveConfirm.getIdPerson().trim());
+
+		redirectAttributes.addAttribute("idperson", onLeaveConfirm.getIdPerson());
+		redirectAttributes.addAttribute("createdate", onLeaveConfirm.getDate());
+		redirectAttributes.addAttribute("startdate", onLeaveConfirm.getStartDate());
+		redirectAttributes.addAttribute("enddate", onLeaveConfirm.getEndDate());
+		return "redirect:/admin/search_onleave_continue";
+	}
+
+	@GetMapping("search_onleave_continue")
+	public String showSearchOnLeaveContinuePage(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size, @RequestParam String idperson,
+			@RequestParam LocalDate createdate, @RequestParam LocalDate startdate, @RequestParam LocalDate enddate,
+			RedirectAttributes redirectAttributes, Model model) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createDate"));
+		Page<OnLeave> onleaves = null;
+		
+		if (createdate.isEqual(LocalDate.of(2000, 01, 01))) {
+			createdate = null;
+		}
+		if (startdate.isEqual(LocalDate.of(2000, 01, 01))) {
+			startdate = null;
+		}
+		if (enddate.isEqual(LocalDate.of(2000, 01, 01))) {
+			enddate = null;
+		}
+		
+		if (idperson.equals("") && createdate == null && startdate == null && enddate == null) {
+			onleaves = onLeaveRepo.findAll(pageable);
+			System.out.println(onleaves.getTotalElements());
+		} else {
+			onleaves = onLeaveRepo.findByIdPersonCreateDateStartDateEndDate(idperson, createdate, startdate, enddate, pageable);
+		}
+		model.addAttribute("onLeaveConfirm", new OnLeaveConfirm());
+		model.addAttribute("onLeaves", onleaves.getContent());
+		model.addAttribute("currentPage", onleaves.getNumber());
+		model.addAttribute("totalPages", onleaves.getTotalPages());
+		model.addAttribute("totalItems", onleaves.getTotalElements());
+		model.addAttribute("idperson", idperson);
+		model.addAttribute("createdate", createdate);
+		model.addAttribute("startdate", startdate);
+		model.addAttribute("enddate", enddate);
+		return "/admin/searchOnLeave";
+	}
+	
 	@GetMapping("logout")
 	public String logout() {
 		account = null;

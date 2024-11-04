@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Trang Chủ</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/admin/adminNav.css">
+	<link rel="stylesheet" href="/css/admin/adminShowMedicineInfor.css">
+	<link rel="stylesheet" href="a.css">
+
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<!-- Sidebar Navigation -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+                <a href="/nuser_medicine_management/nuser_medicine_management_home" class="logo">🏨</a>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a href="/nuser_medicine_management/nuser_medicine_management_home" class="nav-link">Trang Chủ</a></li>
+                    <li class="nav-item"><a href="/nuser_medicine_management/payment" class="nav-link">Thanh toán tiền</a></li>
+                    <li class="nav-item"><a href="/nuser_medicine_management/control_medicine" class="nav-link">Quản lý thuốc</a></li>
+                    <li class="nav-item"><a href="/nuser_medicine_management/logout" class="nav-link">Đăng Xuất</a></li>
+                </ul>
+            </nav>
+
+			<!-- Main Content Area -->
+			<main class="col-md-9 col-lg-10 main-content">
+				<div class="container mt-4">
+					<!-- Edit Form -->
+					<div id="editForm" class="edit-form">
+						<form action="/nuser_medicine_management/change_medicine_information" method="post" th:object="${createMedicineDto}"
+							onsubmit="return confirmSubmit();" enctype="multipart/form-data">
+							<h3>Chỉnh Sửa Thuốc</h3>
+							<input type="hidden" th:field="*{id}" name="idMedicine">
+
+							<div class="row">
+								<div class="form-image col-md-5">
+									<img th:src="@{/medicine/{image}(image=${imageMedicine})}" alt="Ảnh Thuốc"
+										class="img-fluid">
+								</div>
+								<div class="form-info col-md-7">
+									<div class="mb-3">
+										<label for="name" class="form-label">Tên Thuốc:</label>
+										<input type="text" th:field="*{name}" class="form-control">
+										<p th:if="${#fields.hasErrors('name')}" th:errorclass="text-danger"
+											accept=".png" th:errors="*{name}"></p>
+									</div>
+
+									<div class="mb-3">
+										<label for="expirationDate" class="form-label">Hạn Sử Dụng:( Cũ: <span
+												th:text="${createMedicineDto.expirationDate}"></span>)</label>
+										<input type="date" class="form-control" th:field="*{expirationDate}">
+										<p th:if="${#fields.hasErrors('expirationDate')}" th:errorclass="text-danger"
+											accept=".png" th:errors="*{expirationDate}"></p>
+									</div>
+
+									<div class="mb-3">
+										<label for="quantity" class="form-label">Số Lượng:</label>
+										<input type="number" class="form-control" th:field="*{quantity}">
+										<p th:if="${#fields.hasErrors('quantity')}" th:errorclass="text-danger"
+											accept=".png" th:errors="*{quantity}"></p>
+									</div>
+
+									<div class="mb-3">
+										<label for="price" class="form-label">Giá:</label>
+										<input type="number" class="form-control" th:field="*{price}">
+										<p th:if="${#fields.hasErrors('price')}" th:errorclass="text-danger"
+											accept=".png" th:errors="*{price}"></p>
+									</div>
+
+									<div class="mb-3">
+										<label for="image" class="form-label">chọn ảnh:</label>
+										<input type="file" class="form-control" th:field="*{image}" required>
+									</div>
+
+									<button type="submit" class="btn btn-primary">Lưu</button>
+								</div>
+							</div>
+						</form>
+					</div>
+
+				</div>
+			</main>
+		</div>
+	</div>
+
+	<!-- Optional JavaScript for Form Display -->
+	<script>
+		function showEditForm(id) {
+			document.getElementById('editForm').style.display = 'flex';
+			// Add logic here to load the medicine data into the form based on the id if needed
+		}
+
+		function hideEditForm() {
+			document.getElementById('editForm').style.display = 'none';
+		}
+
+		function confirmSubmit() {
+			return confirm("Bạn có chắc chắn muốn lưu thông tin thuốc này?");
+		}
+	</script>
+</body>
+
+</html>

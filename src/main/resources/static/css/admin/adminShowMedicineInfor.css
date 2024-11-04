@@ -1,0 +1,54 @@
+/* Custom CSS for better styling */
+.main-content {
+	margin-left: 18%;
+	padding: 20px;
+}
+
+.edit-form {
+	background-color: #ffffff;
+	/* Màu nền trắng cho form */
+	border: 1px solid #dee2e6;
+	/* Đường viền nhẹ xung quanh form */
+	border-radius: 8px;
+	/* Bo góc cho form */
+	padding: 20px;
+	/* Khoảng cách bên trong form */
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	/* Đổ bóng cho form */
+}
+
+.img-fluid {
+	border-radius: 10%;
+	/* Bo góc cho hình ảnh */
+	max-width: 500px;
+	max-height: 600px;
+}
+
+.form-control {
+	border-radius: 5px;
+	/* Bo góc cho các input */
+	border: 1px solid #ced4da;
+	/* Đường viền cho input */
+}
+
+.form-control:focus {
+	border-color: #80bdff;
+	/* Đổi màu đường viền khi focus vào input */
+	box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+	/* Thêm hiệu ứng shadow khi focus */
+}
+
+.btn-primary {
+	margin-top: 20px;
+	border-radius: 5px;
+	/* Bo góc cho nút bấm */
+	transition: background-color 0.3s ease;
+	/* Hiệu ứng chuyển màu */
+}
+
+.btn-primary:hover {
+	background-color: #0056b3;
+	/* Thay đổi màu nền khi hover */
+	color: #ffffff;
+	/* Thay đổi màu chữ khi hover */
+}

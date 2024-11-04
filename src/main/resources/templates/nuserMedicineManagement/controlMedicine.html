@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Quản Lý Thuốc</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" href="/css/admin/adminNav.css">
+	<link rel="stylesheet" href="/css/admin/adminControlMedicine.css">
+	<link rel="stylesheet" href="a.css">
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<!-- Sidebar Navigation -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+                <a href="/nuser_medicine_management/nuser_medicine_management_home" class="logo">🏨</a>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a href="/nuser_medicine_management/nuser_medicine_management_home" class="nav-link">Trang Chủ</a></li>
+                    <li class="nav-item"><a href="/nuser_medicine_management/payment" class="nav-link">Thanh toán tiền</a></li>
+                    <li class="nav-item"><a href="/nuser_medicine_management/control_medicine" class="nav-link">Quản lý thuốc</a></li>
+                    <li class="nav-item"><a href="/nuser_medicine_management/logout" class="nav-link">Đăng Xuất</a></li>
+                </ul>
+            </nav>
+
+			<main class="col-md-9 col-lg-10 main-content">
+				<h2>Quản Lý Thuốc</h2>
+
+				
+				<form method="get" action="/nuser_medicine_management/search_medicine" class="search-form" th:object="${searchDto}">
+					<div class="form-row">
+						<!-- tên thuốc -->
+						<div class="">
+							<label for="idPerson">Tên thuốc</label>
+							<input type="text" class="form-control"
+								placeholder="Nhập ID Person" th:field="*{nameMedicine}">
+						</div>
+
+						<!-- Nhập ngày hết hạn -->
+						<div class="">
+							<label for="name">Tên</label>
+							<input type="date" class="form-control" placeholder="Ngày hết hạn"
+								th:field="*{expirationDate}">
+						</div>
+
+						<!-- Số Lương -->
+						<div class="">
+							<label for="phoneNumber">Số lượng</label>
+							<input type="number" class="form-control" 
+								placeholder="Nhập Số Điện Thoại" th:field="*{quantity}">
+						</div>
+						<!-- Giá thuốc -->
+						<div class="">
+							<label for="phoneNumber">Giá thuốc</label>
+							<input type="number" class="form-control" 
+								placeholder="Nhập Số Điện Thoại" th:field="*{price}">
+						</div>
+						<!-- Search Button -->
+						<button type="submit" class="btn btn-primary">Tìm kiếm</button>
+					</div>
+				</form>
+
+
+				<!-- Add Medicine Button -->
+				<button class="btn btn-primary btn-add-medicine" data-bs-toggle="modal"
+					data-bs-target="#addMedicineModal">＋</button>
+
+				<!-- Medicine List -->
+				<div id="medicine-list" th:each=" medicine : ${medicines}">
+					<div class="medicine-card"
+						th:attr="onclick='showMedicineInfor(\'' + ${medicine.idMedicine} + '\')'">
+						<img th:src="@{'/medicine/' + ${medicine.image}}" alt="Ảnh Thuốc" class="medicine-image">
+						<div class="medicine-info">
+							<p class="medicine-info-item"><strong>Tên thuốc:</strong><span
+									th:text="${medicine.name}"></span></p>
+							<p class="medicine-info-item"><strong>Ngày hết hạn:</strong><span
+									th:text="${medicine.expirationDate}"></span></p>
+							<p class="medicine-info-item"><strong>Số lượng:</strong><span
+									th:text="${medicine.quantity}"></span></p>
+							<p class="medicine-info-item"><strong>Giá:</strong><span th:text="${medicine.price}"></span>
+							</p>
+						</div>
+						<!-- Delete Icon -->
+						<i class="bi bi-x-circle delete-icon" 
+						th:attr="onclick='event.stopPropagation(); confirmDelete(\'' + ${medicine.idMedicine} + '\')'"></i>
+					</div>
+				</div>
+				<!-- Pagination -->
+				<div class="row">
+					<div class="col-md-12">
+						<nav aria-label="Page navigation">
+							<ul class="pagination justify-content-center">
+								<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+									<a class="page-link"
+										th:href="@{/nuser_medicine_management/control_medicine(page=${currentPage - 1}, size=${size})}"
+										aria-label="Previous">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+								<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+									th:classappend="${currentPage == i} ? 'active'">
+									<a class="page-link" th:href="@{/nuser_medicine_management/control_medicine(page=${i}, size=${size})}"
+										th:text="${i + 1}">1</a>
+								</li>
+								<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+									<a class="page-link"
+										th:href="@{/nuser_medicine_management/control_medicine(page=${currentPage + 1}, size=${size})}"
+										aria-label="Next">
+										<span aria-hidden="true">&raquo;</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</main>
+		</div>
+
+	</div>
+
+	<!-- Modal for Adding Medicine -->
+	<div class="modal fade" id="addMedicineModal" tabindex="-1" aria-labelledby="addMedicineModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="addMedicineModalLabel">Thêm Thuốc</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form id="addMedicineForm" action="/nuser_medicine_management/create_medicine" method="POST"
+						enctype="multipart/form-data" th:object="${createMedicineDto}">
+						<div th:if="${error != null}" class="alert alert-danger" role="alert">
+							<p th:text="${error}"></p>
+						</div>
+						<div th:if="${success != null}" class="alert alert-success" role="alert">
+							<p th:text="${success}"></p>
+						</div>
+						<div class="mb-3">
+							<label for="medicineName" class="form-label">Tên Thuốc</label>
+							<input type="text" class="form-control" required th:field="*{name}">
+							<p th:if="${#fields.hasErrors('name')}" th:errorclass="text-danger" th:errors="*{name}"></p>
+						</div>
+						<div class="mb-3">
+							<label for="expiryDate" class="form-label">Ngày Hết Hạn</label>
+							<input type="date" class="form-control" required th:field="*{expirationDate}">
+							<p th:if="${#fields.hasErrors('expirationDate')}" th:errorclass="text-danger"
+								th:errors="*{expirationDate}"></p>
+						</div>
+						<div class="mb-3">
+							<label for="quantity" class="form-label">Số Lượng</label>
+							<input type="number" class="form-control" required th:field="*{quantity}">
+							<p th:if="${#fields.hasErrors('quantity')}" th:errorclass="text-danger"
+								th:errors="*{quantity}"></p>
+						</div>
+						<div class="mb-3">
+							<label for="price" class="form-label">Giá</label>
+							<input type="number" step="10000" class="form-control" required th:field="*{price}">
+							<p th:if="${#fields.hasErrors('price')}" th:errorclass="text-danger" th:errors="*{price}">
+							</p>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Tải Lên Ảnh Thuốc</label>
+							<div class="image-upload-container" style="cursor: pointer;"
+								onclick="document.getElementById('image').click();">
+								<img id="imagePreview" src="#" alt="Ảnh thuốc xem trước"
+									style="display:none; width: 100%; border-radius: 8px; border: 1px solid #ddd;">
+								<input type="file" class="form-control" id="image" name="image" th:field="*{image}"
+									accept="image/*" onchange="previewImage(event)" style="display: none;" required>
+								<div class="upload-placeholder"
+									style="text-align: center; padding: 20px; border: 2px dashed #ddd; border-radius: 8px;">
+									<p>Nhấp vào đây để tải ảnh lên</p>
+								</div>
+								<p th:if="${#fields.hasErrors('image')}" th:errorclass="text-danger"
+									th:errors="*{image}"></p>
+							</div>
+						</div>
+						<button type="submit" class="btn btn-primary">Thêm Thuốc</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+	<script>
+		function previewImage(event) {
+			const imagePreview = document.getElementById('imagePreview');
+			const uploadPlaceholder = document.querySelector('.upload-placeholder');
+
+			const file = event.target.files[0];
+			if (file) {
+				const reader = new FileReader();
+				reader.onload = function (e) {
+					imagePreview.src = e.target.result;
+					imagePreview.style.display = 'block'; // Hiển thị ảnh xem trước
+					uploadPlaceholder.style.display = 'none'; // Ẩn khung tải ảnh
+				};
+				reader.readAsDataURL(file);
+			}
+		}
+
+
+		function confirmDelete(medicineId) {
+			if (confirm('Bạn có chắc chắn muốn xóa thuốc này?')) {
+				// Chuyển hướng đến trang xóa thuốc, có thể là một trang xử lý xóa thuốc
+				window.location.href = `/nuser_medicine_management/delete_medicine?idmedicine=${medicineId}`; // Cập nhật đường dẫn theo API hoặc route trong ứng dụng của bạn
+			}
+		}
+		function showMedicineInfor(idMedicine) {
+			window.location.href = `/nuser_medicine_management/medicine_information?idmedicine=${idMedicine}`;
+		}
+	</script>
+</body>
+
+</html>

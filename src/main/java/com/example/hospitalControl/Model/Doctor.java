@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -30,13 +31,9 @@ public class Doctor extends Person{
 	@Column(name = "degree")
 	private String degree;
 	
-	@OneToOne(mappedBy = "doctor")
-	@JsonManagedReference
-	private OnLeave onLeave;
-	
 	@OneToMany(mappedBy = "doctor")
 	@JsonManagedReference
-	private List<MedicalRecord> medicalRecord;
+	private List<Patient> patient;
 
 	public Specialized getSpecialized() {
 		return specialized;
@@ -70,21 +67,12 @@ public class Doctor extends Person{
 		this.avatar = avatar;
 	}
 
-	public OnLeave getOnLeave() {
-		return onLeave;
+	public List<Patient> getPatient() {
+		return patient;
 	}
 
-	public void setOnLeave(OnLeave onLeave) {
-		this.onLeave = onLeave;
+	public void setPatient(List<Patient> patient) {
+		this.patient = patient;
 	}
-
-	public List<MedicalRecord> getMedicalRecord() {
-		return medicalRecord;
-	}
-
-	public void setMedicalRecord(List<MedicalRecord> medicalRecord) {
-		this.medicalRecord = medicalRecord;
-	}
-	
 	
 }
