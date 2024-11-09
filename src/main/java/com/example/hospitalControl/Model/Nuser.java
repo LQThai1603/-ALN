@@ -85,5 +85,11 @@ public class Nuser extends Person{
 	public void setPatient(List<Patient> patient) {
 		this.patient = patient;
 	}
+
+	@Override
+	public String toString() {
+		return "Nuser [avatar=" + avatar + ", degree=" + degree + ", room=" + room + ", yearsExperience="
+				+ yearsExperience + ", price=" + price + ", patient=" + patient + "]";
+	}
 	
 }

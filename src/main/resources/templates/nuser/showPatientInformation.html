@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Thông Tin Bệnh Nhân</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/admin/adminNav.css">
+	<link rel="stylesheet" href="/css/nuserPatientCare/createPatient.css">
+	<link rel="stylesheet" href="/css/doctor/nuserCard.css">
+	<style>
+		.search-btn {
+			margin-bottom: 15px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<!-- Sidebar Navigation -->
+			<nav class="col-md-3 col-lg-2 d-md-block sidebar">
+				<a href="/nuser/nuser_home" class="logo">🏨</a>
+				<ul class="nav flex-column">
+					<li class="nav-item"><a href="/nuser/nuser_home" class="nav-link">Trang Chủ</a></li>
+					<li class="nav-item"><a href="/nuser/profile" class="nav-link">Hồ sơ</a></li>
+					<li class="nav-item"><a href="/nuser/control_patient" class="nav-link">Công việc</a></li>
+					<li class="nav-item"><a href="/nuser/on_leave" class="nav-link">xin nghỉ</a></li>
+					<li class="nav-item"><a href="/nuser/control_onleave" class="nav-link">Đơn xin nghỉ</a></li>
+					<li class="nav-item"><a href="/nuser/logout" class="nav-link">Đăng Xuất</a></li>
+				</ul>
+			</nav>
+
+			<!-- Main Content Area -->
+			<main class="col-md-9 col-lg-10 main-content">
+				<div class="container mt-4">
+					<h2>Thông Tin Bệnh Nhân</h2>
+					<form action="/doctor/doctor_check" method="POST" th:object="${patientDto}">
+						<input class="form-check-input" type="text"  th:field="*{idPatient}" hidden>
+
+						<div class="mb-3">
+							<input class="form-check-input" type="checkbox"  th:field="*{examined}" disabled>
+							<label for="check" class="form-label">Đã khám</label>
+						</div>
+						<div class="mb-3">
+							<label for="time" class="form-label">Thời Gian</label>
+							<input type="text" class="form-control" th:field="*{time}" readonly>
+						</div>
+						<div class="mb-3">
+							<label for="name" class="form-label">Tên</label>
+							<input type="text" class="form-control" th:field="*{name}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="phoneNumber" class="form-label">Số Điện Thoại</label>
+							<input type="text" class="form-control" th:field="*{phoneNumber}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="age" class="form-label">Tuổi</label>
+							<input type="number" class="form-control" th:field="*{age}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="address" class="form-label">Địa Chỉ</label>
+							<input type="text" class="form-control" th:field="*{address}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="sex" class="form-label">Giới Tính</label>
+							<select class="form-select" th:field="*{sex}" disabled>
+								<option value="MALE">Nam</option>
+								<option value="FEMALE">Nữ</option>
+							</select>
+						</div>
+
+						<div class="mb-3">
+							<label for="idDoctor" class="form-label">Mã Bác Sĩ</label>
+							<input type="text" class="form-control" th:field="*{idDoctor}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="conjecture" class="form-label">Dự đoán</label>
+							<textarea class="form-control" th:field="*{conjecture}" rows="3" readonly></textarea>
+						</div>
+
+						<div class="mb-3">
+							<label for="conclusion" class="form-label">Kết Luận</label>
+							<textarea class="form-control" th:field="*{conclusion}" rows="3" readonly></textarea>
+						</div>
+					</form>
+				</div>
+			</main>
+		</div>
+	</div>
+	<script>
+		function confirmDelete(idNuser, idPatient) {
+			const confirmation = confirm("Bạn có chắc chắn muốn xóa y tá này?");
+			if (confirmation) {
+				// Nếu người dùng chọn OK, chuyển hướng đến trang khác
+				window.location.href = `/doctor/delete_nuser_for_patient?idnuser=${idNuser}&idpatient=${idPatient}`; // Thay đổi link theo nhu cầu của bạn
+				alert("Xóa y tá thành công");
+			}
+		}
+	</script>
+</body>
+
+</html>

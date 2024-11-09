@@ -65,8 +65,8 @@ public class Patient {
 	@Column(name = "price")
 	private int price;
 
-	@Column(name = "date")
-	private LocalDateTime date;
+	@Column(name = "time")
+	private LocalDateTime time;
 
 	@ManyToOne(optional = true)
 	@JsonBackReference
@@ -192,14 +192,6 @@ public class Patient {
 		this.price = price;
 	}
 
-	public LocalDateTime getDate() {
-		return date;
-	}
-
-	public void setDate(LocalDateTime date) {
-		this.date = date;
-	}
-
 	public Doctor getDoctor() {
 		return doctor;
 	}
@@ -223,6 +215,13 @@ public class Patient {
 	public void setMedicine(List<Medicine> medicine) {
 		this.medicine = medicine;
 	}
-	
+
+	public LocalDateTime getTime() {
+		return time;
+	}
+
+	public void setTime(LocalDateTime time) {
+		this.time = time;
+	}
 	
 }

@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Thông Tin Bệnh Nhân</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/admin/adminNav.css">
+	<link rel="stylesheet" href="/css/nuserPatientCare/createPatient.css">
+	<link rel="stylesheet" href="/css/doctor/nuserCard.css">
+	<style>
+		.search-btn {
+			margin-bottom: 15px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<!-- Sidebar Navigation -->
+			<nav class="col-md-3 col-lg-2 d-md-block sidebar">
+				<a href="/doctor/doctor_home" class="logo">🏨</a>
+				<ul class="nav flex-column">
+					<li class="nav-item"><a href="/doctor/doctor_home" class="nav-link">Trang Chủ</a></li>
+					<li class="nav-item"><a href="/doctor/profile" class="nav-link">Hồ sơ</a></li>
+					<li class="nav-item"><a href="/doctor/control_patient" class="nav-link">Công việc</a></li>
+					<li class="nav-item"><a href="/doctor/on_leave" class="nav-link">Xin nghỉ</a></li>
+					<li class="nav-item"><a href="/doctor/control_onleave" class="nav-link">Đơn xin nghỉ</a></li>
+					<li class="nav-item"><a href="/doctor/logout" class="nav-link">Đăng Xuất</a></li>
+				</ul>
+			</nav>
+
+			<!-- Main Content Area -->
+			<main class="col-md-9 col-lg-10 main-content">
+				<div class="container mt-4">
+					<h2>Thông Tin Bệnh Nhân</h2>
+					<form action="/doctor/doctor_check" method="POST" th:object="${patientDto}">
+						<input class="form-check-input" type="text"  th:field="*{idPatient}" hidden>
+
+						<div class="mb-3">
+							<input class="form-check-input" type="checkbox"  th:field="*{examined}">
+							<label for="check" class="form-label">Đã khám</label>
+						</div>
+						<div class="mb-3">
+							<label for="time" class="form-label">Thời Gian</label>
+							<input type="text" class="form-control" th:field="*{time}" readonly>
+						</div>
+						<div class="mb-3">
+							<label for="name" class="form-label">Tên</label>
+							<input type="text" class="form-control" th:field="*{name}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="phoneNumber" class="form-label">Số Điện Thoại</label>
+							<input type="text" class="form-control" th:field="*{phoneNumber}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="age" class="form-label">Tuổi</label>
+							<input type="number" class="form-control" th:field="*{age}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="address" class="form-label">Địa Chỉ</label>
+							<input type="text" class="form-control" th:field="*{address}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="sex" class="form-label">Giới Tính</label>
+							<select class="form-select" th:field="*{sex}" readonly>
+								<option value="MALE">Nam</option>
+								<option value="FEMALE">Nữ</option>
+							</select>
+						</div>
+
+						<div class="mb-3">
+							<label for="idDoctor" class="form-label">Mã Bác Sĩ</label>
+							<input type="text" class="form-control" th:field="*{idDoctor}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="conjecture" class="form-label">Dự đoán</label>
+							<textarea class="form-control" th:field="*{conjecture}" rows="3"></textarea>
+						</div>
+
+						<div class="mb-3">
+							<label for="conclusion" class="form-label">Kết Luận</label>
+							<textarea class="form-control" th:field="*{conclusion}" rows="3"></textarea>
+						</div>
+
+						<div class="mb-3">
+							<label for="idNuser" class="form-label">Y tá khám bệnh</label>
+							<!-- User Cards (Vertical Layout) -->
+							<div id="user-list" th:each="nuser : ${nuserPatient}">
+								<!-- Example of a single user card -->
+								<div class="user-card"
+									th:attr="onclick='showNuserInfor(\'' + ${nuser.idPerson} + '\')'">
+									<!-- Avatar -->
+									<img class="user-avatar" th:src="@{'/avatar/' + ${nuser.avatar}}"
+										alt="Ảnh Đại Diện Người Dùng">
+
+									<!-- User Information -->
+									<div class="user-info">
+										<p class="user-info-item"><span><strong>IP: </strong></span><span
+												th:text="${nuser.idPerson}"></span></p>
+										<p class="user-info-item"><span><strong>Tên: </strong></span><span
+												th:text="${nuser.name}"></span></p>
+										<p class="user-info-item"><span><strong>Phòng ban: </strong></span> <span
+												th:text="${nuser.room}"></span></p>
+										<p class="user-info-item"><span><strong>Số điện thoại: </strong></span> <span
+												th:text="${nuser.phoneNumber}"></span></p>
+									</div>
+
+									<!-- Delete Icon -->
+									<span class="delete-icon"
+										th:attr="onclick='event.stopPropagation(); confirmDelete(\'' + ${nuser.idPerson} + '\', \'' + ${idpatient} + '\')'">❌</span>
+								</div>
+							</div>
+						</div>
+						<button type="submit" class="btn btn-primary">Lưu Thông Tin</button>
+					</form>
+				</div>
+
+				<form method="post" action="/doctor/patient_information_search_nuser" class="search-form">
+					<div class="form-row">
+						<input type="text" class="form-control" id="idpatient" name="idpatient" th:value="${idpatient}"
+							hidden>
+
+						<!-- Room Input -->
+						<div class="">
+							<label class="form-label">Phòng ban</label>
+							<select class="form-select" name="room">
+								<option value="" selected>Chọn phòng ban</option>
+								<option value="PATIENT_CARE">Patient Care - Chăm sóc bệnh nhân</option>
+								<option value="MEDICATION_MANAGEMENT">Medication Management - Quản lý thuốc</option>
+								<option value="LABORATORY">Laboratory - Phòng xét nghiệm</option>
+								<option value="RADIOLOGY_DEPARTMENT">Radiology Department - Khoa X-quang</option>
+								<option value="ELECTROCARDIOGRAPHY">Electrocardiography - Điện tâm đồ</option>
+								<option value="PULMONARY_FUNCTION_TEST">Pulmonary Function Test - Kiểm tra chức năng
+									phổi</option>
+								<option value="ECHOCARDIOGRAPHY">Echocardiography - Siêu âm tim</option>
+								<option value="BONE_DENSITOMETRY">Bone Densitometry - Đo mật độ xương</option>
+								<option value="ENDOSCOPY">Endoscopy - Nội soi</option>
+								<option value="ELECTROENCEPHALOGRAPHY">Electroencephalography - Điện não đồ</option>
+								<option value="CARDIAC_DIAGNOSTICS">Cardiac Diagnostics - Chẩn đoán tim mạch</option>
+							</select>
+						</div>
+
+						<!-- Search Button -->
+						<button type="submit" class="btn btn-primary search-btn">Tìm kiếm</button>
+					</div>
+				</form>
+
+
+				<!-- Lặp qua từng nuser, mỗi nuser trong một form riêng -->
+				<div th:each="nuser : ${nusers}">
+					<form method="post" action="/doctor/add_nuser_for_patient">
+						<input type="text" class="form-control" id="idnuser" name="idnuser" th:value="${nuser.idPerson}" hidden>
+						<input type="number" class="form-control" id="idpatient" name="idpatient" th:value="${idpatient}" hidden>
+						<!-- User Card Content -->
+						<div class="user-card" th:attr="onclick='showNuserInfor(\'' + ${nuser.idPerson} + '\')'">
+							<!-- Avatar -->
+							<img class="user-avatar" th:src="@{'/avatar/' + ${nuser.avatar}}"
+								alt="Ảnh Đại Diện Người Dùng">
+
+							<!-- User Information -->
+							<div class="user-info">
+								<p class="user-info-item"><span><strong>IP: </strong></span><span
+										th:text="${nuser.idPerson}"></span></p>
+								<p class="user-info-item"><span><strong>Tên: </strong></span><span
+										th:text="${nuser.name}"></span></p>
+								<p class="user-info-item"><span><strong>Phòng ban: </strong></span><span
+										th:text="${nuser.room}"></span></p>
+								<p class="user-info-item"><span><strong>Số điện thoại: </strong></span><span
+										th:text="${nuser.phoneNumber}"></span></p>
+							</div>
+
+							<!-- Submit Button for Individual nuser -->
+							<button type="submit" class="btn-primary">+</button>
+						</div>
+					</form>
+				</div>
+
+				<!-- Pagination -->
+				<div class="row">
+					<div class="col-md-12">
+						<nav aria-label="Page navigation">
+							<ul class="pagination justify-content-center">
+								<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+									<a class="page-link"
+										th:href="@{/doctor/patient_information_search_nuser_continue(page=${currentPage - 1}, size=${size}, idpatient=${idpatient}, room=${room})}"
+										aria-label="Previous">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+								<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+									th:classappend="${currentPage == i} ? 'active'">
+									<a class="page-link"
+										th:href="@{/doctor/patient_information_search_nuser_continue(page=${i}, size=${size}, idpatient=${idpatient}, room=${room})}"
+										th:text="${i + 1}">1</a>
+								</li>
+								<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+									<a class="page-link"
+										th:href="@{/doctor/patient_information_search_nuser_continue(page=${currentPage + 1}, size=${size}, idpatient=${idpatient}, room=${room})}"
+										aria-label="Next">
+										<span aria-hidden="true">&raquo;</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+	<script>
+		function confirmDelete(idNuser, idPatient) {
+			const confirmation = confirm("Bạn có chắc chắn muốn xóa y tá này?");
+			if (confirmation) {
+				// Nếu người dùng chọn OK, chuyển hướng đến trang khác
+				window.location.href = `/admin/delete_nuser?idnuser=${idNuser}`; // Thay đổi link theo nhu cầu của bạn
+				alert("Xóa y tá thành công");
+			}
+		}
+	</script>
+</body>
+
+</html>

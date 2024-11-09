@@ -52,8 +52,9 @@
                 <ul class="nav flex-column">
                     <li class="nav-item"><a href="/nuser/nuser_home" class="nav-link">Trang Chủ</a></li>
                     <li class="nav-item"><a href="/nuser/profile" class="nav-link">Hồ sơ</a></li>
-                    <li class="nav-item"><a href="/nuser/control_account_doctor" class="nav-link">Công việc</a></li>
-                    <li class="nav-item"><a href="/nuser/control_account_nurse" class="nav-link">xin nghỉ</a></li>
+                    <li class="nav-item"><a href="/nuser/control_patient" class="nav-link">Công việc</a></li>
+                    <li class="nav-item"><a href="/nuser/on_leave" class="nav-link">xin nghỉ</a></li>
+                    <li class="nav-item"><a href="/nuser/control_onleave" class="nav-link">Đơn xin nghỉ</a></li>
                     <li class="nav-item"><a href="/nuser/logout" class="nav-link">Đăng Xuất</a></li>
                 </ul>
             </nav>
@@ -77,38 +78,38 @@
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Họ và tên</label>
-							<input type="text" class="form-control" th:field="*{name}">
+							<input type="text" class="form-control" th:field="*{name}" readonly>
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Tuổi</label>
-							<input type="number" class="form-control" th:field="*{age}">
+							<input type="number" class="form-control" th:field="*{age}" readonly>
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Email</label>
-							<input type="email" class="form-control" th:field="*{email}">
+							<input type="email" class="form-control" th:field="*{email}" readonly>
 							</p>
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Giới tính</label>
-							<input type="text" class="form-control" th:field="*{sex}">
+							<input type="text" class="form-control" th:field="*{sex}" readonly>
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Số điện thoại</label>
-							<input type="text" class="form-control" th:field="*{phoneNumber}">
+							<input type="text" class="form-control" th:field="*{phoneNumber}" readonly>
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Bằng cấp</label>
 							<textarea class="form-control" th:field="*{degree}" rows="5"
-								style="height: 200px; resize: vertical; width: 100%;"></textarea>
+								style="height: 200px; resize: vertical; width: 100%;" readonly></textarea>
 							</p>
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Phòng ban</label>
-							<input type="text" class="form-control" th:field="*{room}">
+							<input type="text" class="form-control" th:field="*{room}" readonly>
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Kinh nghiệm (năm)</label>
-							<input type="number" class="form-control" th:field="*{yearsExperience}">
+							<input type="number" class="form-control" th:field="*{yearsExperience}" readonly>
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Giá dịch vụ</label>

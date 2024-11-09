@@ -1,0 +1,54 @@
+/* CSS cho phần nội dung chính */
+.main-content {
+	margin-left: 18%;
+	/* Đẩy nội dung chính sang phải để tránh bị trùng với sidebar */
+	padding: 20px;
+}
+
+/* Căn giữa nội dung */
+.container {
+	max-width: 100%;
+	margin: 0 auto;
+	padding: 20px;
+}
+
+/* Kiểu chữ và khoảng cách cho các tiêu đề */
+h2 {
+	font-size: 2.5rem;
+	margin-bottom: 30px;
+}
+
+/* Kiểu chung cho các nhãn và ô nhập liệu trong form */
+.form-label {
+	font-size: 1rem;
+	font-weight: bold;
+	color: #333;
+}
+
+.form-control,
+.form-select {
+	font-size: 1.3rem;
+	padding: 10px;
+	margin-bottom: 15px;
+	border-radius: 5px;
+}
+
+/* Tăng kích thước cho checkbox label */
+.form-check-label {
+	font-size: 1.3rem;
+}
+
+/* Kiểu cho button lưu thông tin */
+.btn-primary {
+	font-size: 1.5rem;
+	padding: 10px 20px;
+	background-color: #007bff;
+	border: none;
+	border-radius: 5px;
+	transition: background-color 0.3s;
+}
+
+.btn-primary:hover {
+	background-color: #0056b3;
+	/* Màu nền khi hover */
+}

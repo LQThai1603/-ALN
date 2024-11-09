@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Quản Lý Tài Khoản</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
+	<Link rel="stylesheet" href="/css/admin/adminNav.css">
+	<Link rel="stylesheet" href="/css/admin/adminControlAccountDoctor.css">
+
+	<style>
+		.btn-primary {
+			margin-bottom: 36px;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="container-fluid">
+		<div class="row">
+			<!-- Sidebar Navigation -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+                <a href="/doctor/doctor_home" class="logo">🏨</a>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a href="/doctor/doctor_home" class="nav-link">Trang Chủ</a></li>
+                    <li class="nav-item"><a href="/doctor/profile" class="nav-link">Hồ sơ</a></li>
+                    <li class="nav-item"><a href="/doctor/control_patient" class="nav-link">Công việc</a></li>
+                    <li class="nav-item"><a href="/doctor/on_leave" class="nav-link">Xin nghỉ</a></li>
+                    <li class="nav-item"><a href="/doctor/control_onleave" class="nav-link">Đơn xin nghỉ</a></li>
+                    <li class="nav-item"><a href="/doctor/logout" class="nav-link">Đăng Xuất</a></li>
+                </ul>
+            </nav>
+			<!-- Main Content Area -->
+			<div class="main-content col-md-9 col-lg-10">
+				<h2>danh sách bệnh nhân</h2>
+
+				<form method="get" action="/doctor/search_patient" class="search-form" th:object="${searchDto}">
+					<div class="form-row">
+						<!-- IP Person Input -->
+						<div class="mb-4">
+							<label for="idPatient">ID bệnh nhân</label>
+							<input type="number" class="form-control" placeholder="Nhập ID Person"
+								th:field="*{idPatient}">
+						</div>
+						<!-- Name Input -->
+						<div class="mb-4">
+							<label for="time" class="form-label">Ngày tạo hồ sơ bệnh nhân</label>
+							<input type="date" class="form-control" th:field="*{time}">
+							</p>
+						</div>
+						<!-- Phone Number Input -->
+						<div class="mb-4">
+							<label for="phoneNumber" class="form-label">Tên</label>
+							<input type="text" class="form-control" placeholder="Nhập tên bệnh nhân" th:field="*{name}">
+							</p>
+						</div>
+						<!-- Search Button -->
+						<button type="submit" class="btn btn-primary">Tìm kiếm</button>
+					</div>
+				</form>
+
+				<!-- User Cards (Vertical Layout) -->
+				<div id="user-list" th:each="patient : ${patients}">
+					<!-- Example of a single user card -->
+					<div class="user-card" th:attr="onclick='showPatientInformation(\'' + ${patient.idPatient} + '\')'">
+
+						<!-- User Information -->
+						<div class="user-info">
+							<p class="user-info-item"><span><strong>ID bệnh nhân: </strong></span><span
+									th:text="${patient.idPatient}"></span></p>
+							<p class="user-info-item"><span><strong>Tên bệnh nhân: </strong></span><span
+									th:text="${patient.name}"></span></p>
+							<p class="user-info-item"><span><strong>Số điện thoại: </strong></span><span
+									th:text="${patient.phoneNumber}"></span></p>
+							<p class="user-info-item"><span><strong>Thời gian tạo hồ sơ: </strong></span> <span
+									th:text="${#temporals.format(patient.time, 'dd-MM-yyyy HH:mm')}"></span></p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Pagination -->
+				<div class="row">
+					<div class="col-md-12">
+						<nav aria-label="Page navigation">
+							<ul class="pagination justify-content-center">
+								<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+									<a class="page-link"
+										th:href="@{/doctor/search_patient_continue(page=${currentPage - 1}, size=${size}, idpatient=${idpatient}, time=${time}, name=${name})}"
+										aria-label="Previous">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+								<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+									th:classappend="${currentPage == i} ? 'active'">
+									<a class="page-link"
+										th:href="@{/doctor/search_patient_continue(page=${i}, size=${size}, idpatient=${idpatient}, time=${time}, name=${name})}"
+										th:text="${i + 1}">1</a>
+								</li>
+								<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+									<a class="page-link"
+										th:href="@{/doctor/search_patient_continue(page=${currentPage + 1}, size=${size}, idpatient=${idpatient}, time=${time}, name=${name})}"
+										aria-label="Next">
+										<span aria-hidden="true">&raquo;</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+	<script>
+
+		function showPatientInformation(id) {
+			window.location.href = `/doctor/patient_information?idpatient=${id}`;
+		}
+	</script>
+	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+
+</html>

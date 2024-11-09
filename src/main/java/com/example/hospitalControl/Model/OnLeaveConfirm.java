@@ -75,5 +75,4 @@ public class OnLeaveConfirm {
 		this.date = date;
 	}
 	
-	
 }

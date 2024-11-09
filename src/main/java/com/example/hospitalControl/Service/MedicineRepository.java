@@ -13,9 +13,9 @@ public interface MedicineRepository extends JpaRepository<Medicine, Integer> {
 	@Query("SELECT m FROM Medicine m "
 			+ "WHERE "
 			+ "m.name LIKE %:name% "
-			+ "AND m.expirationDate < :expirationDate "
-			+ "AND m.quantity BETWEEN :quantity - 50 AND :quantity + 50 "
-			+ "AND m.price BETWEEN :price - 50000 AND :price + 50000")
+			+ "AND m.expirationDate <= :expirationDate "
+			+ "AND ((m.quantity >= :quantity - 50 AND m.quantity <= :quantity + 50) OR :quantity = 0) "
+			+ "AND ((m.price >= :price - 50000 AND m.price <= :price + 50000) OR :price = 0)")
 	Page<Medicine> findByNameExpirationDateQuantityPrice(String name, LocalDate expirationDate, int quantity, int price,
 			Pageable pageable);
 }

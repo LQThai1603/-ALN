@@ -675,7 +675,7 @@ public class AdminController {
 		System.out.println("quantity: " + searchDto.getQuantity());
 
 		if (searchDto.getExpirationDate() == null) {
-			searchDto.setExpirationDate(LocalDate.of(3030, 1, 30));
+			searchDto.setExpirationDate(LocalDate.of(2099, 1, 30));
 		}
 
 		redirectAttributes.addAttribute("name", searchDto.getNameMedicine());
@@ -696,11 +696,10 @@ public class AdminController {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<Medicine> medicines = null;
 
-		if (name.equals("") && expirationdate == null && quantity == 0 && price == 0) {
+		if (name.equals("") && expirationdate.equals(LocalDate.of(2099, 1, 30)) && quantity == 0 && price == 0) {
 			medicines = medicineRepo.findAll(pageable);
 
 		} else {
-
 			medicines = medicineRepo.findByNameExpirationDateQuantityPrice(name, expirationdate, quantity, price,
 					pageable);
 		}
@@ -871,6 +870,7 @@ public class AdminController {
 		o.setIdPerson(onLeaveConfirm.getIdPerson());
 		o.setReason(onLeaveConfirm.getReason());
 		o.setStartDate(onLeaveConfirm.getStartDate());
+		o.setCreateDate(onLeaveConfirm.getDate());
 		onLeaveRepo.save(o);
 		redirectAttributes.addAttribute("idonleave", o.getId());
 		return "redirect:/admin/onleave_information";
@@ -932,6 +932,22 @@ public class AdminController {
 		} else {
 			onleaves = onLeaveRepo.findByIdPersonCreateDateStartDateEndDate(idperson, createdate, startdate, enddate, pageable);
 		}
+		
+		if(createdate == null) {
+			createdate = LocalDate.of(2000, 01, 01);
+		}
+		if(startdate == null) {
+			startdate = LocalDate.of(2000, 01, 01);
+		}
+		if(enddate == null) {
+			enddate = LocalDate.of(2000, 01, 01);
+		}
+		
+		System.out.println( "------" +onleaves.getTotalElements());
+		System.out.println( "------" +idperson);
+		System.out.println( "------" +createdate);
+		System.out.println( "------" +startdate);
+		System.out.println( "------" +enddate);
 		model.addAttribute("onLeaveConfirm", new OnLeaveConfirm());
 		model.addAttribute("onLeaves", onleaves.getContent());
 		model.addAttribute("currentPage", onleaves.getNumber());

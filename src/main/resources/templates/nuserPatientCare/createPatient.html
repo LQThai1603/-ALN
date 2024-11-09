@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Trang Chủ</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/admin/adminNav.css">
+	<link rel="stylesheet" href="/css/nuserPatientCare/createPatient.css">
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<!-- Sidebar Navigation -->
+			<nav class="col-md-3 col-lg-2 d-md-block sidebar">
+				<a href="#home" class="logo">🏨</a>
+				<ul class="nav flex-column">
+					<li class="nav-item"><a href="#home" class="nav-link">Trang Chủ</a></li>
+					<li class="nav-item"><a href="/nuser_patient_care/create_patient" class="nav-link">Tạo TT bệnh
+							nhân</a></li>
+					<li class="nav-item"><a href="/nuser_patient_care/control_account_doctor" class="nav-link">Tra cứu
+							thông tin</a></li>
+					<li class="nav-item"><a href="/nuser_patient_care/control_account_doctor" class="nav-link">Tra cứu
+							Bác sĩ</a></li>
+					<li class="nav-item"><a href="/nuser_patient_care/logout" class="nav-link">Đăng Xuất</a></li>
+				</ul>
+			</nav>
+
+			<!-- Main Content Area -->
+			<main class="col-md-9 col-lg-10 main-content">
+				<div class="container mt-4">
+					<h2>Tạo Thông Tin Bệnh Nhân</h2>
+					<form action="/nuser_patient_care/create_patient" method="POST" th:object="${createPatientDto}">
+						<div th:if="${error != null}" class="alert alert-danger" role="alert">
+							<p th:text="${error}"></p>
+						</div>
+						<div th:if="${success != null}" class="alert alert-success" role="alert">
+							<p th:text="${success}"></p>
+						</div>
+						<div class="mb-3">
+							<label for="medicineName" class="form-label">Tên</label>
+							<input type="text" class="form-control" required th:field="*{name}">
+							<p th:if="${#fields.hasErrors('name')}" th:errorclass="text-danger" th:errors="*{name}"></p>
+						</div>
+
+						<div class="mb-3">
+							<label for="phoneNumber" class="form-label">Số Điện Thoại</label>
+							<input type="text" class="form-control" th:field="*{phoneNumber}">
+							<p th:if="${#fields.hasErrors('name')}" th:errorclass="text-danger" th:errors="*{name}"></p>
+						</div>
+
+						<div class="mb-3">
+							<label for="age" class="form-label">Tuổi</label>
+							<input type="number" class="form-control" th:field="*{age}">
+							<p th:if="${#fields.hasErrors('age')}" th:errorclass="text-danger" th:errors="*{age}"></p>
+						</div>
+
+						<div class="mb-3">
+							<label for="address" class="form-label">Địa Chỉ</label>
+							<input type="text" class="form-control" th:field="*{address}">
+							<p th:if="${#fields.hasErrors('address')}" th:errorclass="text-danger" th:errors="*{address}"></p>
+						</div>
+
+						<div class="mb-3">
+							<label for="sex" class="form-label">Giới Tính</label>
+							<select class="form-select" th:field="*{sex}">
+								<option value="MALE">Nam</option>
+								<option value="FEMALE">Nữ</option>
+							</select>
+							<p th:if="${#fields.hasErrors('sex')}" th:errorclass="text-danger" th:errors="*{sex}"></p>
+						</div>
+
+						<div class="mb-3">
+							<label for="idDoctor" class="form-label">Mã Bác Sĩ</label>
+							<input type="text" class="form-control" th:field="*{idDoctor}">
+							<p th:if="${#fields.hasErrors('idDoctor')}" th:errorclass="text-danger" th:errors="*{idDoctor}"></p>
+						</div>
+						<button type="submit" class="btn btn-primary">Lưu Thông Tin</button>
+					</form>
+				</div>
+			</main>
+
+
+		</div>
+	</div>
+</body>
+
+</html>

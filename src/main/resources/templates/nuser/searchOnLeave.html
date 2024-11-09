@@ -23,29 +23,28 @@
 	<div class="container-fluid">
 		<div class="row">
 			<!-- Sidebar Navigation -->
-			<nav class="col-md-3 col-lg-2 d-md-block sidebar">
-				<a href="/admin/admin_home" class="logo">🏨</a>
-				<ul class="nav flex-column">
-					<li class="nav-item"><a href="/admin/admin_home" class="nav-link">Trang Chủ</a></li>
-					<li class="nav-item"><a href="/admin/create_account" class="nav-link">Tạo tài khoản</a></li>
-					<li class="nav-item"><a href="/admin/control_account_doctor" class="nav-link">Quản lý bác sĩ</a>
-					</li>
-					<li class="nav-item"><a href="/admin/control_account_nurse" class="nav-link">Quản lý y tá</a></li>
-					<li class="nav-item"><a href="/admin/control_medicine" class="nav-link">Quản lý thuốc</a></li>
-					<li class="nav-item"><a href="/admin/logout" class="nav-link">Đăng Xuất</a></li>
-				</ul>
-			</nav>
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+                <a href="/nuser/nuser_home" class="logo">🏨</a>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a href="/nuser/nuser_home" class="nav-link">Trang Chủ</a></li>
+                    <li class="nav-item"><a href="/nuser/profile" class="nav-link">Hồ sơ</a></li>
+                    <li class="nav-item"><a href="/nuser/control_patient" class="nav-link">Công việc</a></li>
+                    <li class="nav-item"><a href="/nuser/on_leave" class="nav-link">xin nghỉ</a></li>
+                    <li class="nav-item"><a href="/nuser/control_onleave" class="nav-link">Đơn xin nghỉ</a></li>
+                    <li class="nav-item"><a href="/nuser/logout" class="nav-link">Đăng Xuất</a></li>
+                </ul>
+            </nav>
 			<!-- Main Content Area -->
 			<div class="main-content col-md-9 col-lg-10">
 				<h2>Đơn xin nghỉ</h2>
 
-				<form method="get" action="/admin/search_onleave" class="search-form" th:object="${onLeaveConfirm}">
+				<form method="get" action="/nuser/search_onleave" class="search-form" th:object="${onLeaveConfirm}">
 					<div class="form-row">
 						<!-- IP Person Input -->
 						<div class="">
 							<label for="idPerson">ID Person</label>
 							<input type="text" class="form-control" th:field="*{idPerson}"
-								placeholder="Nhập ID Person">
+								placeholder="Nhập ID Person" disabled>
 						</div>
 
 						<!-- Name Input -->
@@ -100,19 +99,19 @@
 							<ul class="pagination justify-content-center">
 								<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
 									<a class="page-link"
-										th:href="@{/admin/search_onleave_continue(page=${currentPage - 1}, size=${size}, idperson=${idperson}, createdate=${createdate}, startdate=${startdate}, enddate=${enddate})}"
+										th:href="@{/nuser/search_onleave_continue(page=${currentPage - 1}, size=${size}, idperson=${idperson}, createdate=${createdate}, startdate=${startdate}, enddate=${enddate})}"
 										aria-label="Previous">
 										<span aria-hidden="true">&laquo;</span>
 									</a>
 								</li>
 								<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
 									th:classappend="${currentPage == i} ? 'active'">
-									<a class="page-link" th:href="@{/admin/search_onleave_continue(page=${i}, size=${size}, idperson=${idperson}, createdate=${createdate}, startdate=${startdate}, enddate=${enddate})}"
+									<a class="page-link" th:href="@{/nuser/search_onleave_continue(page=${i}, size=${size}, idperson=${idperson}, createdate=${createdate}, startdate=${startdate}, enddate=${enddate})}"
 										th:text="${i + 1}">1</a>
 								</li>
 								<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
 									<a class="page-link"
-										th:href="@{/admin/search_onleave_continue(page=${currentPage + 1}, size=${size}, idperson=${idperson}, createdate=${createdate}, startdate=${startdate}, enddate=${enddate})}"
+										th:href="@{/nuser/search_onleave_continue(page=${currentPage + 1}, size=${size}, idperson=${idperson}, createdate=${createdate}, startdate=${startdate}, enddate=${enddate})}"
 										aria-label="Next">
 										<span aria-hidden="true">&raquo;</span>
 									</a>
@@ -128,7 +127,7 @@
 	<script>
 
 		function showOnLeaveInformation(id) {
-			window.location.href = `/admin/onleave_information?idonleave=${id}`;
+			window.location.href = `/nuser/onleave_information?idonleave=${id}`;
 		}
 	</script>
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

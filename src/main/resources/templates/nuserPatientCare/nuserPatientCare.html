@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Chủ</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/admin/adminNav.css">
+    <link rel="stylesheet" href="/css/admin/adminHome.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar">
+                <a href="#home" class="logo">🏨</a>
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a href="#home" class="nav-link">Trang Chủ</a></li>
+                    <li class="nav-item"><a href="/nuser_patient_care/create_patient" class="nav-link">Tạo TT bệnh nhân</a></li>
+                    <li class="nav-item"><a href="/nuser_patient_care/control_patient" class="nav-link">Tra TT bệnh nhân</a></li>
+                    <li class="nav-item"><a href="/nuser_patient_care/control_account_doctor" class="nav-link">Tra cứu Bác sĩ</a></li>
+                    <li class="nav-item"><a href="/nuser_patient_care/logout" class="nav-link">Đăng Xuất</a></li>
+                </ul>
+            </nav>
+
+            <!-- Main Content Area -->
+        <main class="col-md-9 col-lg-10 main-content">
+            <div class="d-flex flex-wrap justify-content-center align-items-center gap-3" style="height: 100%;">
+                <a href="/nuser_patient_care/create_patient" class="text-decoration-none">
+                    <div class="card bg-white shadow-sm p-3">
+                        <div class="icon">🧑‍</div>
+                        <p>Tạo Thông tin bệnh nhân</p>
+                    </div>
+                </a>
+                <a href="/nuser_patient_care/control_patient" class="text-decoration-none">
+                    <div class="card bg-white shadow-sm p-3">
+                        <div class="icon">🔎</div>
+                        <p>Tra cứu thông tin bệnh nhân</p>
+                    </div>
+                </a>
+                <a href="/nuser_patient_care/control_account_doctor" class="text-decoration-none">
+                    <div class="card bg-white shadow-sm p-3">
+                        <div class="icon">👨‍⚕️</div>
+                        <p>Tra cứu bác sĩ</p>
+                    </div>
+                </a>
+            </div>
+        </main>
+
+        </div>
+    </div>
+</body>
+</html>

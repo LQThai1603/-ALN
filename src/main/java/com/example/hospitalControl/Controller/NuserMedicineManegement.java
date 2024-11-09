@@ -146,7 +146,7 @@ public class NuserMedicineManegement {
 		System.out.println("quantity: " + searchDto.getQuantity());
 
 		if (searchDto.getExpirationDate() == null) {
-			searchDto.setExpirationDate(LocalDate.of(3030, 1, 30));
+			searchDto.setExpirationDate(LocalDate.of(2099, 1, 30));
 		}
 
 		redirectAttributes.addAttribute("name", searchDto.getNameMedicine());
@@ -167,7 +167,7 @@ public class NuserMedicineManegement {
 		Pageable pageable = PageRequest.of(page, size);
 		Page<Medicine> medicines = null;
 
-		if (name.equals("") && expirationdate == null && quantity == 0 && price == 0) {
+		if (name.equals("") && expirationdate.equals(LocalDate.of(2099, 1, 30)) && quantity == 0 && price == 0) {
 			medicines = medicineRepo.findAll(pageable);
 
 		} else {
