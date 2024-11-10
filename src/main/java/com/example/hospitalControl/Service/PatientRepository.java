@@ -2,6 +2,7 @@ package com.example.hospitalControl.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -42,6 +43,14 @@ public interface PatientRepository extends JpaRepository<Patient, Integer>{
 			+ "AND (:time IS NULL OR (p.time >= :time))"
 			+ "AND (:idPatient = 0 OR p.idPatient = :idPatient)")
 	Page<Patient> findByIdPatientTimeNameNuserId(String idNuser, int idPatient, LocalDateTime time, String name, Pageable pageable);
+	
+	@Query("SELECT p FROM Patient p JOIN p.medicine m WHERE "
+			+ "m.idMedicine = :idMedicine")
+	List<Patient> findByIdMedicine(int idMedicine);
+	
+	@Query("SELECT p FROM Patient p JOIN p.doctor d WHERE "
+			+ "d.idPerson LIKE %:idDoctor%")
+	List<Patient> findByIdDoctor(String idDoctor);
 
 }
 	

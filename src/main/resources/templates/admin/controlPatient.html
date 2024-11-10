@@ -12,8 +12,8 @@
 	<Link rel="stylesheet" href="/css/admin/adminControlAccountDoctor.css">
 
 	<style>
-		.btn-primary{
-			margin-bottom: 30px;
+		.btn-primary {
+			margin-bottom: 36px;
 		}
 	</style>
 </head>
@@ -22,12 +22,12 @@
 
 	<div class="container-fluid">
 		<div class="row">
-			<!-- Sidebar Navigation -->
+			 <!-- Sidebar Navigation -->
 			<nav class="col-md-3 col-lg-2 d-md-block sidebar">
 				<a href="/admin/admin_home" class="logo">🏨</a>
 				<ul class="nav flex-column">
                     <li class="nav-item"><a href="/admin/admin_home" class="nav-link">Trang Chủ</a></li>
-                   <li class="nav-item"><a href="/admin/create_account" class="nav-link">Tạo tài khoản</a></li>
+                   	<li class="nav-item"><a href="/admin/create_account" class="nav-link">Tạo tài khoản</a></li>
                     <li class="nav-item"><a href="/admin/control_account_doctor" class="nav-link">Quản lý bác sĩ</a></li>
                     <li class="nav-item"><a href="/admin/control_account_nurse" class="nav-link">Quản lý y tá</a></li>
                     <li class="nav-item"><a href="/admin/control_medicine" class="nav-link">Quản lý thuốc</a></li>
@@ -35,37 +35,29 @@
                     <li class="nav-item"><a href="/admin/control_patient" class="nav-link">Tra TT bệnh nhân</a></li>
                     <li class="nav-item"><a href="/admin/logout" class="nav-link">Đăng Xuất</a></li>
                 </ul>
-			</nav>s
+			</nav>
+            
 			<!-- Main Content Area -->
 			<div class="main-content col-md-9 col-lg-10">
-				<h2>Đơn xin nghỉ</h2>
+				<h2>danh sách bệnh nhân</h2>
 
-				<form method="get" action="/admin/search_onleave" class="search-form" th:object="${onLeaveConfirm}">
+				<form method="get" action="/admin/search_patient" class="search-form" th:object="${searchDto}">
 					<div class="form-row">
 						<!-- IP Person Input -->
-						<div class="">
-							<label for="idPerson">ID Person</label>
-							<input type="text" class="form-control" th:field="*{idPerson}"
-								placeholder="Nhập ID Person">
+						<div class="mb-4">
+							<label for="idPatient">ID bệnh nhân</label>
+							<input type="number" class="form-control" placeholder="Nhập ID Person" th:field="*{idPatient}">
 						</div>
-
 						<!-- Name Input -->
-						<div class="mb-3">
-							<label for="startDate" class="form-label">Ngày tạo đơn xin nghỉ</label>
-							<input type="date" class="form-control" th:field="*{date}">
-							</p>
-						</div>
-
-						<!-- Room Input -->
-						<div class="mb-3">
-							<label for="startDate" class="form-label">Ngày bắt đầu</label>
-							<input type="date" class="form-control" th:field="*{startDate}">
+						<div class="mb-4">
+							<label for="time" class="form-label">Ngày tạo hồ sơ bệnh nhân</label>
+							<input type="date" class="form-control" th:field="*{time}">
 							</p>
 						</div>
 						<!-- Phone Number Input -->
-						<div class="mb-3">
-							<label for="startDate" class="form-label">Ngày kết thúc</label>
-							<input type="date" class="form-control" th:field="*{endDate}">
+						<div class="mb-4">
+							<label for="phoneNumber" class="form-label">Tên</label>
+							<input type="text" class="form-control" placeholder="Nhập tên bệnh nhân" th:field="*{name}">
 							</p>
 						</div>
 						<!-- Search Button -->
@@ -74,25 +66,23 @@
 				</form>
 
 				<!-- User Cards (Vertical Layout) -->
-				<div id="user-list" th:each="onLeave : ${onLeaves}">
+				<form id="user-list" th:each="patient : ${patients}">
 					<!-- Example of a single user card -->
-					<div class="user-card" th:attr="onclick='showOnLeaveInformation(\'' + ${onLeave.id} + '\')'">
+					<div class="user-card" th:attr="onclick='showPatientInformation(\'' + ${patient.idPatient} + '\')'">
 
 						<!-- User Information -->
 						<div class="user-info">
-							<p class="user-info-item"><span><strong>ID Person: </strong></span><span
-									th:text="${onLeave.idPerson}"></span></p>
-							<p class="user-info-item"><span><strong>Ngày tạo đơn xin nghỉ: </strong></span><span
-									th:text="${onLeave.createDate}"></span></p>
-							<p class="user-info-item"><span><strong>Ngày bắt đầu </strong></span><span
-									th:text="${onLeave.startDate}"></span></p>
-							<p class="user-info-item"><span><strong>Ngày kết thúc: </strong></span> <span
-									th:text="${onLeave.endDate}"></span></p>
-							<p class="user-info-item"><span><strong>Lý do: </strong></span> <span
-									th:text="${onLeave.reason}"></span></p>
+							<p class="user-info-item"><span><strong>ID bệnh nhân: </strong></span><span
+									th:text="${patient.idPatient}"></span></p>
+							<p class="user-info-item"><span><strong>Tên bệnh nhân: </strong></span><span
+									th:text="${patient.name}"></span></p>
+							<p class="user-info-item"><span><strong>Số điện thoại: </strong></span><span
+									th:text="${patient.phoneNumber}"></span></p>
+							<p class="user-info-item"><span><strong>Thời gian tạo hồ sơ: </strong></span> <span
+									th:text="${#temporals.format(patient.time, 'dd-MM-yyyy HH:mm')}"></span></p>
 						</div>
 					</div>
-				</div>
+				</form>
 
 				<!-- Pagination -->
 				<div class="row">
@@ -101,19 +91,19 @@
 							<ul class="pagination justify-content-center">
 								<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
 									<a class="page-link"
-										th:href="@{/admin/control_onleave(page=${currentPage - 1}, size=${size})}"
+										th:href="@{/admin/control_patient(page=${currentPage - 1}, size=${size})}"
 										aria-label="Previous">
 										<span aria-hidden="true">&laquo;</span>
 									</a>
 								</li>
 								<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
 									th:classappend="${currentPage == i} ? 'active'">
-									<a class="page-link" th:href="@{/admin/control_onleave(page=${i}, size=${size})}"
+									<a class="page-link" th:href="@{/admin/control_patient(page=${i}, size=${size})}"
 										th:text="${i + 1}">1</a>
 								</li>
 								<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
 									<a class="page-link"
-										th:href="@{/admin/control_onleave(page=${currentPage + 1}, size=${size})}"
+										th:href="@{/admin/control_patient(page=${currentPage + 1}, size=${size})}"
 										aria-label="Next">
 										<span aria-hidden="true">&raquo;</span>
 									</a>
@@ -128,8 +118,8 @@
 	</div>
 	<script>
 
-		function showOnLeaveInformation(id) {
-			window.location.href = `/admin/onleave_information?idonleave=${id}`;
+		function showPatientInformation(id) {
+			window.location.href = `/admin/patient_information?idpatient=${id}`;
 		}
 	</script>
 	<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

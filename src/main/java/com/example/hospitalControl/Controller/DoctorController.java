@@ -404,7 +404,7 @@ public class DoctorController {
 		patientDto.setTime(o.getTime());
 
 		Pageable pageable = PageRequest.of(page, size);
-		Page<Nuser> nusers = nuserRepo.findAll(pageable);
+		Page<Nuser> nusers = nuserRepo.findByNotOnleaveToday("", "", null, "", LocalDate.now(), pageable);
 //		System.out.println(o.getNuser().get(0).getIdPerson());
 
 		model.addAttribute("patientDto", patientDto);
@@ -472,7 +472,7 @@ public class DoctorController {
 		Page<Nuser> nusers = null;
 
 		if (room.equals("")) {
-			nusers = nuserRepo.findAll(pageable);
+			nusers = nuserRepo.findByNotOnleaveToday("", "", null, "", LocalDate.now(), pageable);
 
 		} else {
 			Room roomValue;
@@ -482,7 +482,7 @@ public class DoctorController {
 				// Xử lý trường hợp không có giá trị trong enum
 				roomValue = null; // hoặc giá trị mặc định khác
 			}
-			nusers = nuserRepo.findByIpPersonUserNameRoomPhoneNumber("", "", roomValue, "", pageable);
+			nusers = nuserRepo.findByNotOnleaveToday("", "", roomValue, "", LocalDate.now(), pageable);
 		}
 		Patient o = patientRepo.findById(idpatient).orElse(null);
 		PatientInformationForDoctor patientDto = new PatientInformationForDoctor();

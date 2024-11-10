@@ -21,10 +21,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.hospitalControl.Model.Account;
 import com.example.hospitalControl.Model.CreatePatientDto;
 import com.example.hospitalControl.Model.Doctor;
+import com.example.hospitalControl.Model.Medicine;
 import com.example.hospitalControl.Model.Nuser;
 import com.example.hospitalControl.Model.Patient;
 import com.example.hospitalControl.Model.PatientInformationForDoctor;
 import com.example.hospitalControl.Model.SearchDoctorDto;
+import com.example.hospitalControl.Model.SearchMedicineDto;
 import com.example.hospitalControl.Model.SearchNuserDto;
 import com.example.hospitalControl.Model.SearchPatientDto;
 import com.example.hospitalControl.Model.Sex;
@@ -32,6 +34,7 @@ import com.example.hospitalControl.Model.Specialized;
 import com.example.hospitalControl.Security.AESUtils;
 import com.example.hospitalControl.Service.AccountRepository;
 import com.example.hospitalControl.Service.DoctorRepository;
+import com.example.hospitalControl.Service.MedicineRepository;
 import com.example.hospitalControl.Service.PatientRepository;
 
 import jakarta.validation.Valid;
@@ -50,6 +53,9 @@ public class NuserPatientCareController {
 	
 	@Autowired
 	PatientRepository patientRepo;
+	
+	@Autowired
+	MedicineRepository medicineRepo;
 	
 	@GetMapping("")
 	public String showNuserPatientCarePage(@RequestParam("userName") String userName, @RequestParam("password") String password)
@@ -191,6 +197,132 @@ public class NuserPatientCareController {
 		return "/nuserPatientCare/searchDoctor";
 	}
 	
+	@GetMapping("control_patient")
+	public String showControlPatientPage(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size, Model model) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "time"));
+		Page<Patient> patients = patientRepo.findAll(pageable);
+		
+		model.addAttribute("patients", patients);
+		model.addAttribute("searchDto", new SearchPatientDto());
+		model.addAttribute("currentPage", patients.getNumber());
+		model.addAttribute("totalPages", patients.getTotalPages());
+		model.addAttribute("totalItems", patients.getTotalElements());
+		return "/nuserPatientCare/controlPatient";
+	}
+	
+	@GetMapping("search_patient")
+	public String showSearchPatient(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size, Model model, @ModelAttribute SearchPatientDto searchPatientDto,
+			RedirectAttributes redirectAttributes) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+		if (searchPatientDto.getTime() == null) {
+			searchPatientDto.setTime(LocalDate.of(2000, 01, 01));
+		}
+		System.out.println(searchPatientDto.getTime());
+		System.out.println(searchPatientDto.getName());
+		System.out.println(searchPatientDto.getIdPatient());
+		searchPatientDto.setName(searchPatientDto.getName().trim());
+		searchPatientDto.setIdPatient(searchPatientDto.getIdPatient());
+
+		redirectAttributes.addAttribute("idpatient", searchPatientDto.getIdPatient());
+		redirectAttributes.addAttribute("time", searchPatientDto.getTime());
+		redirectAttributes.addAttribute("name", searchPatientDto.getName());
+		return "redirect:/nuser_patient_care/search_patient_continue";
+	}
+
+	@GetMapping("search_patient_continue")
+	public String showSearchPatientContinuePage(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size, @RequestParam int idpatient, @RequestParam LocalDate time,
+			@RequestParam String name, RedirectAttributes redirectAttributes, Model model) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+		Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "time"));
+		Page<Patient> patients = null;
+
+		if (time.isEqual(LocalDate.of(2000, 01, 01))) {
+			time = null;
+		}
+		System.out.println(name + "-" + time + "-" + idpatient);
+
+		if (name.equals("") && time == null && idpatient == 0) {
+			patients = patientRepo.findByIdPatientTimeName(idpatient, null, name, pageable);
+			System.out.println("--=-=-=" + patients.getTotalElements());
+		} else {
+			LocalDateTime t = null;
+			if (time != null) {
+				t = time.atStartOfDay();
+			}
+			patients = patientRepo.findByIdPatientTimeName(idpatient, t, name, pageable);
+//			patients = patientRepo.findByNameIdPatient(name,idpatient, pageable);
+			System.out.println("idpatient " + idpatient);
+			System.out.println("time " + time);
+			System.out.println("name " + name);
+		}
+
+		if (time == null) {
+			time = LocalDate.of(2000, 01, 01);
+		}
+		model.addAttribute("searchDto", new SearchPatientDto());
+		model.addAttribute("patients", patients.getContent());
+		model.addAttribute("currentPage", patients.getNumber());
+		model.addAttribute("totalPages", patients.getTotalPages());
+		model.addAttribute("totalItems", patients.getTotalElements());
+		model.addAttribute("idpatient", idpatient);
+		model.addAttribute("time", time);
+		model.addAttribute("name", name);
+		return "/nuserPatientCare/searchPatient";
+	}
+	
+	@GetMapping("/patient_information")
+	public String showPatientInformation(@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "3") int size, @RequestParam int idpatient, Model model,
+			RedirectAttributes redirectAttributes) {
+		if (account == null) {
+			return "redirect:/login";
+		}
+
+		Patient o = patientRepo.findById(idpatient).orElse(null);
+		PatientInformationForDoctor patientDto = new PatientInformationForDoctor();
+		patientDto.setAddress(o.getAddress());
+		patientDto.setAge(o.getAge());
+		patientDto.setConclusion(o.getConclusion());
+		patientDto.setConjecture(o.getConjecture());
+		patientDto.setExamined(o.isExamined());
+		patientDto.setIdDoctor(o.getIdDoctor());
+		patientDto.setIdPatient(o.getIdPatient());
+		patientDto.setName(o.getName());
+		patientDto.setPhoneNumber(o.getPhoneNumber());
+		patientDto.setSex(o.getSex());
+		patientDto.setTime(o.getTime());
+		patientDto.setPaid(o.isPaid());
+		
+		o.setPrice(400000);
+		for(Nuser i : o.getNuser()) {
+			o.setPrice(o.getPrice() + i.getPrice());
+		}
+		
+		for(Medicine i : o.getMedicine()) {
+			o.setPrice(o.getPrice() + i.getPrice());
+		}
+		patientDto.setPrice(o.getPrice());
+		
+		
+		model.addAttribute("doctor", o.getDoctor());
+		model.addAttribute("patientDto", patientDto);
+		model.addAttribute("nuserPatient", o.getNuser());
+		model.addAttribute("medicinesPatient", o.getMedicine());
+		model.addAttribute("searchDto", new SearchMedicineDto());
+		model.addAttribute("idpatient", idpatient);
+
+		return "/nuserPatientCare/showPatientInformation";
+	}
 	
 	@GetMapping("logout")
 	public String logout() {

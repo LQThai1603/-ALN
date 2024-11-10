@@ -7,6 +7,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -217,8 +218,14 @@ public class NuserMedicineManegement {
 			System.out.println("không có thuốc này");
 		} else {
 			// xu ly xoa lien quan tai day
+			
+			List<Patient> p = patientRepo.findByIdMedicine(idmedicine);
+			for(Patient i : p) {
+				i.getMedicine().remove(m);
+			}
+			patientRepo.saveAll(p);
 			medicineRepo.delete(m);
-			System.out.println("xóa bác thuốc thành công");
+			System.out.println("xóa thuốc thành công");
 		}
 
 		Pageable pageable = PageRequest.of(page, size);
@@ -412,18 +419,17 @@ public class NuserMedicineManegement {
 		
 		Pageable pageable = PageRequest.of(page, size);
 		Page<Medicine> medicines = medicineRepo.findByQuantity(pageable);
-//		System.out.println(o.getNuser().get(0).getIdPerson());
 		
 		model.addAttribute("doctor", o.getDoctor());
 		model.addAttribute("patientDto", patientDto);
 		model.addAttribute("nuserPatient", o.getNuser());
 		model.addAttribute("medicinesPatient", o.getMedicine());
+		model.addAttribute("idpatient", idpatient); 
 		model.addAttribute("searchDto", new SearchMedicineDto());
 		model.addAttribute("medicines", medicines.getContent());
 		model.addAttribute("currentPage", medicines.getNumber());
 		model.addAttribute("totalPages", medicines.getTotalPages());
 		model.addAttribute("totalItems", medicines.getTotalElements());
-		model.addAttribute("idpatient", idpatient);
 
 		return "/nuserMedicineManagement/showPatientInformation";
 	}
@@ -538,6 +544,7 @@ public class NuserMedicineManegement {
 		m.setQuantity(m.getQuantity()+1);
 		Patient p = patientRepo.findById(idpatient).orElse(null);
 		p.getMedicine().remove(m);
+//		p.getMedicine().clear();
 		patientRepo.save(p);
 
 		redirectAttributes.addAttribute("idpatient", idpatient);

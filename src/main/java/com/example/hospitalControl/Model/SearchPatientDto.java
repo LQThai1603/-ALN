@@ -9,7 +9,7 @@ public class SearchPatientDto {
 	private int idPatient;
 	
 	private LocalDate time;
-
+	
 	public String getName() {
 		return name;
 	}
@@ -33,6 +33,7 @@ public class SearchPatientDto {
 	public void setTime(LocalDate time) {
 		this.time = time;
 	}
+	
 
 	@Override
 	public String toString() {
