@@ -84,7 +84,7 @@ public class NuserPatientCareController {
 	}
 	
 	@PostMapping("create_patient")
-	public String createPatient(@Valid @ModelAttribute CreatePatientDto createPatientDto, BindingResult result) {
+	public String createPatient(@Valid @ModelAttribute CreatePatientDto createPatientDto, BindingResult result, RedirectAttributes redirectAttributes) {
 		if(account == null) {
 			return "redirect:/login";
 		}
@@ -97,6 +97,11 @@ public class NuserPatientCareController {
 			return "/nuserPatientCare/createPatient";
 		}
 		
+		if(doctorRepo.findById(createPatientDto.getIdDoctor()).orElse(null) == null) {
+			redirectAttributes.addFlashAttribute("error", "Không có  bác sĩ với idDoctor vừa nhập");
+	        return "redirect:/nuser_patient_care/create_patient";
+		}
+		
 		Patient p = new Patient();
 		p.setAddress(createPatientDto.getAddress());
 		p.setAge(createPatientDto.getAge());
@@ -105,6 +110,7 @@ public class NuserPatientCareController {
 		p.setSex(Sex.valueOf(createPatientDto.getSex()));
 		p.setName(createPatientDto.getName());
 		p.setPhoneNumber(createPatientDto.getPhoneNumber());
+		p.setPaid(false);
 		
 		patientRepo.save(p);
 		return "redirect:/nuser_patient_care/create_patient";

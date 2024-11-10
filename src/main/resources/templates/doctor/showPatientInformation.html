@@ -220,12 +220,7 @@
 	</div>
 	<script>
 		function confirmDelete(idNuser, idPatient) {
-			const confirmation = confirm("Bạn có chắc chắn muốn xóa y tá này?");
-			if (confirmation) {
-				// Nếu người dùng chọn OK, chuyển hướng đến trang khác
-				window.location.href = `/doctor/delete_nuser_for_patient?idnuser=${idNuser}&idpatient=${idPatient}`; // Thay đổi link theo nhu cầu của bạn
-				alert("Xóa y tá thành công");
-			}
+			window.location.href = `/doctor/delete_nuser_for_patient?idnuser=${idNuser}&idpatient=${idPatient}`;
 		}
 	</script>
 </body>

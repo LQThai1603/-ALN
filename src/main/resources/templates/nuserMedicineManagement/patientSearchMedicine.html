@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Thông Tin Bệnh Nhân</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/css/admin/adminNav.css">
+	<link rel="stylesheet" href="/css/nuserPatientCare/createPatient.css">
+	<link rel="stylesheet" href="/css/doctor/nuserCard.css">
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.9.1/font/bootstrap-icons.min.css">
+	<link rel="stylesheet" href="/css/admin/adminControlMedicine.css">
+	<style>
+		.search-btn {
+			margin-bottom: 15px;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<!-- Sidebar Navigation -->
+			<nav class="col-md-3 col-lg-2 d-md-block sidebar">
+				<a href="/nuser_medicine_management/nuser_medicine_management_home" class="logo">🏨</a>
+				<ul class="nav flex-column">
+					<li class="nav-item"><a href="/nuser_medicine_management/nuser_medicine_management_home"
+							class="nav-link">Trang Chủ</a></li>
+					<li class="nav-item"><a href="/nuser_medicine_management/control_patient" class="nav-link">Thanh
+							toán tiền</a></li>
+					<li class="nav-item"><a href="/nuser_medicine_management/control_medicine" class="nav-link">Quản lý
+							thuốc</a></li>
+					<li class="nav-item"><a href="/nuser_medicine_management/logout" class="nav-link">Đăng Xuất</a></li>
+				</ul>
+			</nav>
+
+			<!-- Main Content Area -->
+			<main class="col-md-9 col-lg-10 main-content">
+				<div class="container mt-4">
+					<h2>Thông Tin Bệnh Nhân</h2>
+					<form action="/nuser_medicine_management/check_paid" method="POST" th:object="${patientDto}">
+						<input class="form-check-input" type="text" th:field="*{idPatient}" hidden>
+
+						<div class="mb-3">
+							<input class="form-check-input" type="checkbox" th:field="*{paid}">
+							<label for="check" class="form-label">Đã thanh toán</label>
+						</div>
+						<div class="mb-3">
+							<label for="check" class="form-label">Tổng tiền cần thanh toán</label>
+							<input type="text" class="form-control" th:field="*{price}" readonly>
+						</div>
+						<div class="mb-3">
+							<label for="time" class="form-label">Thời Gian</label>
+							<input type="text" class="form-control" th:field="*{time}" readonly>
+						</div>
+						<div class="mb-3">
+							<label for="name" class="form-label">Tên</label>
+							<input type="text" class="form-control" th:field="*{name}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="phoneNumber" class="form-label">Số Điện Thoại</label>
+							<input type="text" class="form-control" th:field="*{phoneNumber}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="age" class="form-label">Tuổi</label>
+							<input type="number" class="form-control" th:field="*{age}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="address" class="form-label">Địa Chỉ</label>
+							<input type="text" class="form-control" th:field="*{address}" readonly>
+						</div>
+
+						<div class="mb-3">
+							<label for="sex" class="form-label">Giới Tính</label>
+							<select class="form-select" th:field="*{sex}" readonly>
+								<option value="MALE">Nam</option>
+								<option value="FEMALE">Nữ</option>
+							</select>
+						</div>
+
+						<div class="mb-3">
+							<label for="conjecture" class="form-label">Dự đoán</label>
+							<textarea class="form-control" th:field="*{conjecture}" rows="3" readonly></textarea>
+						</div>
+
+						<div class="mb-3">
+							<label for="conclusion" class="form-label">Kết Luận</label>
+							<textarea class="form-control" th:field="*{conclusion}" rows="3" readonly></textarea>
+						</div>
+						<div class="mb-3">
+							<label for="idNuser" class="form-label">Bác sĩ khám bệnh</label>
+							<!-- User Cards (Vertical Layout) -->
+							<div id="user-list" th:object="${doctor}">
+								<!-- Example of a single user card -->
+								<div class="user-card"
+									th:attr="onclick='showNuserInfor(\'' + ${doctor.idPerson} + '\')'">
+									<!-- Avatar -->
+									<img class="user-avatar" th:src="@{'/avatar/' + ${doctor.avatar}}"
+										alt="Ảnh Đại Diện Người Dùng">
+
+									<!-- User Information -->
+									<div class="user-info">
+										<p class="user-info-item"><span><strong>IP: </strong></span><span
+												th:text="${doctor.idPerson}"></span></p>
+										<p class="user-info-item"><span><strong>Tên: </strong></span><span
+												th:text="${doctor.name}"></span></p>
+										<p class="user-info-item"><span><strong>Chuyên ngành: </strong></span> <span
+												th:text="${doctor.specialized}"></span></p>
+										<p class="user-info-item"><span><strong>Số điện thoại: </strong></span> <span
+												th:text="${doctor.phoneNumber}"></span></p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="mb-3">
+							<label for="idNuser" class="form-label">Y tá khám bệnh</label>
+							<!-- User Cards (Vertical Layout) -->
+							<div id="user-list" th:each="nuser : ${nuserPatient}">
+								<!-- Example of a single user card -->
+								<div class="user-card"
+									th:attr="onclick='showNuserInfor(\'' + ${nuser.idPerson} + '\')'">
+									<!-- Avatar -->
+									<img class="user-avatar" th:src="@{'/avatar/' + ${nuser.avatar}}"
+										alt="Ảnh Đại Diện Người Dùng">
+
+									<!-- User Information -->
+									<div class="user-info">
+										<p class="user-info-item"><span><strong>IP: </strong></span><span
+												th:text="${nuser.idPerson}"></span></p>
+										<p class="user-info-item"><span><strong>Tên: </strong></span><span
+												th:text="${nuser.name}"></span></p>
+										<p class="user-info-item"><span><strong>Phòng ban: </strong></span> <span
+												th:text="${nuser.room}"></span></p>
+										<p class="user-info-item"><span><strong>Giá dịch vụ: </strong></span> <span
+												th:text="${nuser.price}"></span></p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label class="form-label">Thuốc cần mua</label>
+							<!-- Medicine List -->
+							<div th:each=" medicine : ${medicinesPatient}">
+								<div class="medicine-card">
+									<img th:src="@{'/medicine/' + ${medicine.image}}" alt="Ảnh Thuốc"
+										class="medicine-image">
+									<div class="medicine-info">
+										<p class="medicine-info-item"><strong>Tên thuốc:</strong><span
+												th:text="${medicine.name}"></span></p>
+										<p class="medicine-info-item"><strong>Ngày hết hạn:</strong><span
+												th:text="${medicine.expirationDate}"></span></p>
+										<p class="medicine-info-item"><strong>Giá:</strong><span
+												th:text="${medicine.price}"></span>
+										</p>
+									</div>
+									<!-- Delete Icon -->
+									<i class="bi bi-x-circle delete-icon"
+										th:attr="onclick='event.stopPropagation(); confirmDelete(\'' + ${medicine.idMedicine} + '\', \'' + ${idpatient} + '\')'"></i>
+								</div>
+							</div>
+						</div>
+
+						<button type="submit" class="btn btn-primary">Lưu Thông Tin</button>
+					</form>
+				</div>
+
+
+				<form method="post" action="/nuser_medicine_management/patient_information_search_medicine"
+					class="search-form" th:object="${searchDto}">
+					<input type="text" class="form-control" id="idpatient" name="idpatient" th:value="${idpatient}"
+						hidden>
+					<div class="form-row">
+						<!-- tên thuốc -->
+						<div class="">
+							<label for="idPerson">Tên thuốc</label>
+							<input type="text" class="form-control" placeholder="Nhập tên thuốc"
+								th:field="*{nameMedicine}">
+						</div>
+
+						<!-- Nhập ngày hết hạn -->
+						<div class="">
+							<label for="name">Ngày hết hạn</label>
+							<input type="date" class="form-control" placeholder="Ngày hết hạn"
+								th:field="*{expirationDate}">
+						</div>
+
+						<!-- Số Lương -->
+						<div class="">
+							<label for="phoneNumber">Số lượng</label>
+							<input type="number" class="form-control" placeholder="Nhập Số Điện Thoại"
+								th:field="*{quantity}">
+						</div>
+						<!-- Giá thuốc -->
+						<div class="">
+							<label for="phoneNumber">Giá thuốc</label>
+							<input type="number" class="form-control" placeholder="Nhập Số Điện Thoại"
+								th:field="*{price}">
+						</div>
+						<!-- Search Button -->
+						<button type="submit" class="btn btn-primary search-btn">Tìm kiếm</button>
+					</div>
+				</form>
+
+
+
+				<!-- Medicine List -->
+				<div th:each=" medicine : ${medicines}">
+					<form method="post" action="/nuser_medicine_management/add_medicine_for_patient" id="medicine-list">
+						<input type="number" class="form-control" id="idpatient" name="idpatient"
+							th:value="${idpatient}" hidden>
+						<input type="text" class="form-control" id="idmedicine" name="idmedicine"
+							th:value="${medicine.idMedicine}" hidden>
+						<div class="medicine-card"
+							th:attr="onclick='showMedicineInfor(\'' + ${medicine.idMedicine} + '\')'">
+							<img th:src="@{'/medicine/' + ${medicine.image}}" alt="Ảnh Thuốc" class="medicine-image">
+							<div class="medicine-info">
+								<p class="medicine-info-item"><strong>Tên thuốc:</strong><span
+										th:text="${medicine.name}"></span></p>
+								<p class="medicine-info-item"><strong>Ngày hết hạn:</strong><span
+										th:text="${medicine.expirationDate}"></span></p>
+								<p class="medicine-info-item"><strong>Số lượng:</strong><span
+										th:text="${medicine.quantity}"></span></p>
+								<p class="medicine-info-item"><strong>Giá:</strong><span
+										th:text="${medicine.price}"></span>
+								</p>
+							</div>
+							<!-- Submit Button -->
+							<button type="submit" class="btn-primary">+</button>
+						</div>
+					</form>
+				</div>
+
+
+
+				<!-- Pagination -->
+				<div class="row">
+					<div class="col-md-12">
+						<nav aria-label="Page navigation">
+							<ul class="pagination justify-content-center">
+								<li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+									<a class="page-link"
+										th:href="@{/nuser_medicine_management/patient_information_search_medicine_continue(page=${currentPage - 1}, size=${size}, idpatient=${idpatient}, name=${name}, expirationdate=${expirationdate}, quantity=${quantity}, price=${price})}"
+										aria-label="Previous">
+										<span aria-hidden="true">&laquo;</span>
+									</a>
+								</li>
+								<li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+									th:classappend="${currentPage == i} ? 'active'">
+									<a class="page-link"
+										th:href="@{/nuser_medicine_management/patient_information_search_medicine_continue(page=${i}, size=${size}, idpatient=${idpatient}, name=${name}, expirationdate=${expirationdate}, quantity=${quantity}, price=${price})}"
+										th:text="${i + 1}">1</a>
+								</li>
+								<li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+									<a class="page-link"
+										th:href="@{/nuser_medicine_management/patient_information_search_medicine_continue((page=${currentPage + 1}, size=${size}, idpatient=${idpatient}, name=${name}, expirationdate=${expirationdate}, quantity=${quantity}, price=${price})}"
+										aria-label="Next">
+										<span aria-hidden="true">&raquo;</span>
+									</a>
+								</li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+			</main>
+		</div>
+	</div>
+	<script>
+		function confirmDelete(idMedicine, idPatient) {
+			window.location.href = `/nuser_medicine_management/delete_medicine_for_patient?idmedicine=${idMedicine}&idpatient=${idPatient}`;
+		}
+	</script>
+</body>
+
+</html>

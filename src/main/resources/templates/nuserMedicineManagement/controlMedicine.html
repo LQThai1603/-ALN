@@ -16,12 +16,12 @@
 <body>
 	<div class="container-fluid">
 		<div class="row">
-			<!-- Sidebar Navigation -->
+			 <!-- Sidebar Navigation -->
             <nav class="col-md-3 col-lg-2 d-md-block sidebar">
                 <a href="/nuser_medicine_management/nuser_medicine_management_home" class="logo">🏨</a>
                 <ul class="nav flex-column">
                     <li class="nav-item"><a href="/nuser_medicine_management/nuser_medicine_management_home" class="nav-link">Trang Chủ</a></li>
-                    <li class="nav-item"><a href="/nuser_medicine_management/payment" class="nav-link">Thanh toán tiền</a></li>
+                    <li class="nav-item"><a href="/nuser_medicine_management/control_patient" class="nav-link">Thanh toán tiền</a></li>
                     <li class="nav-item"><a href="/nuser_medicine_management/control_medicine" class="nav-link">Quản lý thuốc</a></li>
                     <li class="nav-item"><a href="/nuser_medicine_management/logout" class="nav-link">Đăng Xuất</a></li>
                 </ul>
@@ -37,12 +37,12 @@
 						<div class="">
 							<label for="idPerson">Tên thuốc</label>
 							<input type="text" class="form-control"
-								placeholder="Nhập ID Person" th:field="*{nameMedicine}">
+								placeholder="Nhập tên thuốc" th:field="*{nameMedicine}">
 						</div>
 
 						<!-- Nhập ngày hết hạn -->
 						<div class="">
-							<label for="name">Tên</label>
+							<label for="name">Ngày hết hạn</label>
 							<input type="date" class="form-control" placeholder="Ngày hết hạn"
 								th:field="*{expirationDate}">
 						</div>

@@ -16,8 +16,17 @@ public interface PatientRepository extends JpaRepository<Patient, Integer>{
 		       "AND (:time IS NULL OR (o.time >= :time))" + 
 		       "AND (:idPatient = 0 OR o.idPatient = :idPatient)")
 	Page<Patient> findByIdPatientTimeName(int idPatient, LocalDateTime time, String name, Pageable pageable);
+	
+	@Query("SELECT o FROM Patient o " +
+		       "WHERE o.name LIKE %:name% " +
+		       "AND (:time IS NULL OR (o.time >= :time))" + 
+		       "AND (:idPatient = 0 OR o.idPatient = :idPatient)" +
+		       "AND (o.examined = :examined)")
+	Page<Patient> findByIdPatientTimeNameExamined(int idPatient, LocalDateTime time, String name, boolean examined, Pageable pageable);
 
 	Page<Patient> findByIdDoctor(String idDoctor, Pageable pageable);
+	
+	Page<Patient> findByExamined(boolean examined, Pageable pageable);
 	
 	@Query("SELECT o FROM Patient o " +
 		       "WHERE o.name LIKE %:name% " +

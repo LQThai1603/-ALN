@@ -440,7 +440,6 @@ public class DoctorController {
 		patientRepo.save(p);
 
 		redirectAttributes.addAttribute("idpatient", patientDto.getIdPatient());
-		System.out.println("redirect:/doctor/patient_information");
 		return "redirect:/doctor/patient_information";
 	}
 

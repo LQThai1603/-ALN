@@ -1,7 +1,10 @@
 package com.example.hospitalControl.Model;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 public class CreatePatientDto {
 	
@@ -9,9 +12,12 @@ public class CreatePatientDto {
 	private String name;
 	
 	@NotEmpty(message = "Thiếu số điện thoại")
+	@Pattern(regexp = "^\\d{10}$", message = "Số điện thoại phải có 10 chữ số")
 	private String phoneNumber;
 	
 	@NotNull(message = "Thiếu tuổi")
+	@Min(value = 1, message = "Tuổi phải lớn hơn 0")
+    @Max(value = 99, message = "Tuổi phải nhỏ hơn 100")
 	private int age;
 	
 	@NotEmpty(message = "Thiếu địa chỉ")

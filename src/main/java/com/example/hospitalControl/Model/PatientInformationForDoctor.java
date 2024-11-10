@@ -29,6 +29,28 @@ public class PatientInformationForDoctor {
 
 	private LocalDateTime time;
 
+	private boolean paid;
+	
+	private int price;
+	
+	
+	
+	public int getPrice() {
+		return price;
+	}
+
+	public void setPrice(int price) {
+		this.price = price;
+	}
+
+	public boolean isPaid() {
+		return paid;
+	}
+
+	public void setPaid(boolean paid) {
+		this.paid = paid;
+	}
+
 	public int getIdPatient() {
 		return idPatient;
 	}

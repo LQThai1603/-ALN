@@ -41,14 +41,14 @@
 						</div>
 						<div class="mb-3">
 							<label for="medicineName" class="form-label">Tên</label>
-							<input type="text" class="form-control" required th:field="*{name}">
+							<input type="text" class="form-control" th:field="*{name}">
 							<p th:if="${#fields.hasErrors('name')}" th:errorclass="text-danger" th:errors="*{name}"></p>
 						</div>
 
 						<div class="mb-3">
 							<label for="phoneNumber" class="form-label">Số Điện Thoại</label>
 							<input type="text" class="form-control" th:field="*{phoneNumber}">
-							<p th:if="${#fields.hasErrors('name')}" th:errorclass="text-danger" th:errors="*{name}"></p>
+							<p th:if="${#fields.hasErrors('phoneNumber')}" th:errorclass="text-danger" th:errors="*{phoneNumber}"></p>
 						</div>
 
 						<div class="mb-3">

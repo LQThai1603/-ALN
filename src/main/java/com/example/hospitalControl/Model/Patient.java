@@ -47,9 +47,6 @@ public class Patient {
 	@Column(name = "iddoctor")
 	private String idDoctor;
 
-	@Column(name = "idnuser")
-	private String idNuser;
-
 	@Column(name = "conjecture", columnDefinition = "TEXT")
 	private String conjecture;
 
@@ -67,6 +64,9 @@ public class Patient {
 
 	@Column(name = "time")
 	private LocalDateTime time;
+	
+	@Column(name = "paid")
+	private boolean paid;
 
 	@ManyToOne(optional = true)
 	@JsonBackReference
@@ -144,14 +144,6 @@ public class Patient {
 		this.idDoctor = idDoctor;
 	}
 
-	public String getIdNuser() {
-		return idNuser;
-	}
-
-	public void setIdNuser(String idNuser) {
-		this.idNuser = idNuser;
-	}
-
 	public String getConjecture() {
 		return conjecture;
 	}
@@ -222,6 +214,14 @@ public class Patient {
 
 	public void setTime(LocalDateTime time) {
 		this.time = time;
+	}
+
+	public boolean isPaid() {
+		return paid;
+	}
+
+	public void setPaid(boolean paid) {
+		this.paid = paid;
 	}
 	
 }
